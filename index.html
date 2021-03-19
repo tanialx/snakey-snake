@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Snakey Snake</title>
+    <style>
+        body {
+            overflow: hidden;
+            margin: 0;
+            padding: 0
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="snakeboard"></canvas>
+</body>
+
+<script>
+    const board_border = 'GhostWhite';
+    const board_background = "LavenderBlush";
+    const snake_col = 'DarkSeaGreen';
+    const snake_border = 'Black';
+    const snake_tile_w = 19;
+    const snake_tile_h = 19;
+    const snake_tile_corner_radius = 8;
+
+    const snakeboard = document.getElementById("snakeboard");
+    const snakeboard_ctx = snakeboard.getContext("2d");
+    snakeboard.width = window.innerWidth;
+    snakeboard.height = window.innerHeight;
+
+    const middle_y = snakeboard.height / 2;
+    const middle_x = snakeboard.width / 2;
+
+    let snake_body = [
+        { x: 240, y: middle_y },
+        { x: 220, y: middle_y },
+        { x: 200, y: middle_y },
+        { x: 180, y: middle_y },
+        { x: 160, y: middle_y }
+    ];
+
+    main();
+
+    function main() {
+        clearCanvas();
+        drawSnake();
+    }
+
+    function clearCanvas() {
+        //  Select the colour to fill the drawing
+        snakeboard_ctx.fillStyle = board_background;
+        // Draw a "filled" rectangle to cover the entire canvas
+        snakeboard_ctx.fillRect(0, 0, snakeboard.width, snakeboard.height);
+        // Draw a "border" around the entire canvas
+        snakeboard_ctx.lineWidth = 10;
+        snakeboard_ctx.strokeStyle = board_border;
+        snakeboard_ctx.strokeRect(0, 0, snakeboard.width, snakeboard.height);
+    }
+
+    function drawSnake() {
+        snake_body.forEach(drawSnakePart);
+    }
+
+    function drawSnakePart(snake_part) {
+        drawSsnakeTile(snakeboard_ctx,
+            snake_part.x, snake_part.y,
+            snake_tile_w, snake_tile_h,
+            snake_tile_corner_radius,
+            snake_col, 0,
+            1);
+
+    }
+
+    function drawSsnakeTile(ctx, x, y, width, height, radius, fill, stroke, lineWidth) {
+
+        //Ref https://gist.github.com/afreeland/4484489
+
+        var useStroke = typeof stroke == 'undefined' || stroke !== 0;
+        radius = typeof radius == 'undefined' ? 5 : radius;
+
+        // Save previous context
+        ctx.save();
+        ctx.lineWidth = lineWidth;
+
+        ctx.beginPath();
+        ctx.moveTo(x + radius, y);
+        ctx.lineTo(x + width - radius, y);
+        ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+        ctx.lineTo(x + width, y + height - radius);
+        ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+        ctx.lineTo(x + radius, y + height);
+        ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+        ctx.lineTo(x, y + radius);
+        ctx.quadraticCurveTo(x, y, x + radius, y);
+        ctx.closePath();
+        if (useStroke && stroke !== 0) {
+            ctx.strokeStyle = typeof stroke == 'undefined' ? '#000' : stroke;
+            ctx.stroke();
+        }
+        if (fill) {
+            ctx.fillStyle = fill;
+            ctx.fill();
+        }
+        ctx.restore();
+    }
+
+</script>
+
+</html>
