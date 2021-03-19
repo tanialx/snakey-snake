@@ -50,21 +50,21 @@ class Snake {
     dy() { return this.dy; }
 
     turnLeft() {
-        this.turnMult(-1);
-    }
-
-    turnRight() {
         this.turnMult(1);
     }
 
-    turnMult(sign) {
+    turnRight() {
+        this.turnMult(-1);
+    }
+
+    turnMult(mult) {
         if (this.dx === this.step || this.dx === - this.step) {
-            this.dy = this.dx * sign;
+            this.dy = this.dx * mult * -1;
             this.dx = 0;
             return;
         }
         if (this.dy === this.step || this.dy === - this.step) {
-            this.dx = this.dy * sign;
+            this.dx = this.dy * mult;
             this.dy = 0;
             return;
         }
