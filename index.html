@@ -60,6 +60,10 @@
 
     function autoMove() {
         setTimeout(function onTick() {
+            if (isGameEnded()) {
+                alert('Game over');
+                return;
+            }
             resetCanvas();
             snake.move();
             // Call main again
@@ -83,6 +87,17 @@
         if (keyPressed === KEY_SPACE) {
             snake.pauseOrResumeMoving();
         }
+    }
+
+    function isGameEnded() {
+        if (snake.isCollide()) {
+            return true;
+        }
+        const hitLeftWall = snake.head().x < 0;
+        const hitRightWall = snake.head().x > snakeboard.width - 10;
+        const hitTopWall = snake.head().y < 0;
+        const hitBottomWall = snake.head().y > snakeboard.height - 10;
+        return hitLeftWall || hitRightWall || hitTopWall || hitBottomWall;
     }
 
 </script>

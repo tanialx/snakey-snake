@@ -70,4 +70,14 @@ class Snake {
         }
     }
 
+    head() {
+        return this.snake_body[0];
+    }
+
+    isCollide() {
+        for (var i = 4; i < this.snake_body.length; i++) {
+            return this.snake_body[i].x === this.snake_body[0].x && this.snake_body[i].y === this.snake_body[0].y;
+        }
+    }
+
 }
