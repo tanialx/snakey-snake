@@ -8,6 +8,10 @@ class Snake {
         this.snake_tile_h = 19;
         this.snake_tile_corner_radius = 8;
         this.ctx = snakeboard_ctx;
+        this.step = 20;
+        this.dx = this.step;
+        this.dy = 0;
+        this.pause = false;
     }
 
     init() {
@@ -28,10 +32,42 @@ class Snake {
 
     }
 
-    move(dx, dy) {
-        const head = { x: this.snake_body[0].x + dx, y: this.snake_body[0].y + dy };
+    move() {
+        if (this.pause) {
+            return;
+        }
+        const head = { x: this.snake_body[0].x + this.dx, y: this.snake_body[0].y + this.dy };
         this.snake_body.unshift(head);
         this.snake_body.pop();
         this.redraw();
     }
+
+    pauseOrResumeMoving() {
+        this.pause = !this.pause;
+    }
+
+    dx() { return this.dx; }
+    dy() { return this.dy; }
+
+    turnLeft() {
+        this.turnMult(-1);
+    }
+
+    turnRight() {
+        this.turnMult(1);
+    }
+
+    turnMult(sign) {
+        if (this.dx === this.step || this.dx === - this.step) {
+            this.dy = this.dx * sign;
+            this.dx = 0;
+            return;
+        }
+        if (this.dy === this.step || this.dy === - this.step) {
+            this.dx = this.dy * sign;
+            this.dy = 0;
+            return;
+        }
+    }
+
 }

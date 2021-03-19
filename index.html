@@ -37,6 +37,8 @@
         { x: 160, y: middle_y }
     ]);
 
+    document.addEventListener("keydown", keyboardControl);
+
     main();
 
     function main() {
@@ -59,10 +61,28 @@
     function autoMove() {
         setTimeout(function onTick() {
             resetCanvas();
-            snake.move(20, 0);
+            snake.move();
             // Call main again
             main();
         }, 100)
+    }
+
+    function keyboardControl(event) {
+        const KEY_LEFT = 37;
+        const KEY_RIGHT = 39;
+        const KEY_SPACE = 32;
+
+        const keyPressed = event.keyCode;
+
+        if (keyPressed === KEY_LEFT) {
+            snake.turnLeft();
+        }
+        if (keyPressed === KEY_RIGHT) {
+            snake.turnRight();
+        }
+        if (keyPressed === KEY_SPACE) {
+            snake.pauseOrResumeMoving();
+        }
     }
 
 </script>
