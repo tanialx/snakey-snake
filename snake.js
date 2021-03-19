@@ -18,6 +18,10 @@ class Snake {
         this.redraw();
     }
 
+    isPaused() {
+        return this.pause;
+    }
+
     redraw() {
         this.snake_body.forEach(tile => this.redrawSnakePart(tile, this.ctx));
     }
@@ -58,16 +62,32 @@ class Snake {
     }
 
     turnMult(mult) {
-        if (this.dx === this.step || this.dx === - this.step) {
+        if (this.isMovingRight() || this.isMovingLeft()) {
             this.dy = this.dx * mult * -1;
             this.dx = 0;
             return;
         }
-        if (this.dy === this.step || this.dy === - this.step) {
+        if (this.isMovingUp() || this.isMovingDown()) {
             this.dx = this.dy * mult;
             this.dy = 0;
             return;
         }
+    }
+
+    isMovingLeft() {
+        return this.dx === - this.step;
+    }
+
+    isMovingRight() {
+        return this.dx === this.step;
+    }
+
+    isMovingUp() {
+        return this.dy === - this.step;
+    }
+
+    isMovingDown() {
+        return this.dy === this.step;
     }
 
     head() {
@@ -78,6 +98,12 @@ class Snake {
         for (var i = 4; i < this.snake_body.length; i++) {
             return this.snake_body[i].x === this.snake_body[0].x && this.snake_body[i].y === this.snake_body[0].y;
         }
+    }
+
+    grow() {
+        const head = { x: this.snake_body[0].x + this.dx, y: this.snake_body[0].y + this.dy };
+        this.snake_body.unshift(head);
+        this.redraw();
     }
 
 }

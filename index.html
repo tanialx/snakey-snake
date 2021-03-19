@@ -4,6 +4,7 @@
 <head>
     <title>Snakey Snake</title>
     <script src="./snake.js"></script>
+    <script src="./food.js"></script>
     <script src="./utils.js"></script>
     <style>
         body {
@@ -37,14 +38,52 @@
         { x: 160, y: middle_y }
     ]);
 
+    let food = new Food(snakeboard_ctx, 10, 40);
+    let justEat = true;
+
     document.addEventListener("keydown", keyboardControl);
 
-    main();
+    gameLoop();
 
-    function main() {
-        resetCanvas();
-        snake.init();
-        autoMove();
+    function gameLoop() {
+        if (isGameEnded()) {
+            alert('Game over');
+            return;
+        }
+        setTimeout(function onTick() {
+            if (snake.isPaused()) {
+                return;
+            }
+            resetCanvas();
+            snake.move();
+            if (justEat) {
+                food.genFood();
+                justEat = false;
+            }
+            food.drawFood();
+            if (snakeEating()) {
+                snake.grow();
+                justEat = true;
+            }
+            gameLoop();
+        }, 100)
+    }
+
+    function snakeEating() {
+        const foodCenter = {
+            x: food.getX() + food.getFoodSize() / 2,
+            y: food.getY() + food.getFoodSize() / 2
+        }
+        const snakeHead = snake.head();
+        const snake_x1 = snakeHead.x;
+        const snake_x2 = snakeHead.x + snake.snake_tile_w;
+        const snake_y1 = snakeHead.y;
+        const snake_y2 = snakeHead.y + snake.snake_tile_h;
+        if (foodCenter.x >= snake_x1 && foodCenter.x <= snake_x2
+            && foodCenter.y >= snake_y1 && foodCenter.y <= snake_y2) {
+            return true;
+        }
+        return false;
     }
 
     function resetCanvas() {
@@ -56,19 +95,6 @@
         snakeboard_ctx.lineWidth = 10;
         snakeboard_ctx.strokeStyle = board_border;
         snakeboard_ctx.strokeRect(0, 0, snakeboard.width, snakeboard.height);
-    }
-
-    function autoMove() {
-        setTimeout(function onTick() {
-            if (isGameEnded()) {
-                alert('Game over');
-                return;
-            }
-            resetCanvas();
-            snake.move();
-            // Call main again
-            main();
-        }, 100)
     }
 
     function keyboardControl(event) {
@@ -86,6 +112,9 @@
         }
         if (keyPressed === KEY_SPACE) {
             snake.pauseOrResumeMoving();
+            if (!snake.isPaused()) {
+                gameLoop();
+            }
         }
     }
 
