@@ -2,21 +2,24 @@ class Snake {
 
     constructor(snakeboard_ctx, initialPosition) {
         this.snake_body = initialPosition;
-        this.snake_col = '#d1e0e0';
-        this.snake_border = 'White';
+        this.snake_col = '#adc2eb';
+        this.snake_border = '#336699';
         this.snake_tile_w = 20;
         this.snake_tile_h = 20;
         this.snake_tile_corner_radius = 4;
         this.snake_eye_size = 2;
         this.snake_eye_color = "black";
         this.snake_tongue_size = 4;
-        this.snake_tongue_color = "red";
+        this.snake_tongue_color = "#c6538c";
         this.ctx = snakeboard_ctx;
         this.step = 20;
         this.dx = this.step;
         this.dy = 0;
         this.pause = true;
+        this.speed = 100;
     }
+
+    getSpeed() { return this.speed; }
 
     init() {
         this.render();
@@ -110,7 +113,7 @@ class Snake {
         this.ctx.lineTo(tongue.x1, tongue.y1);
         this.ctx.lineTo(tongue.x3, tongue.y3);
         this.ctx.stroke();
-        
+
         this.ctx.restore();
     }
 
@@ -180,6 +183,13 @@ class Snake {
     grow() {
         const head = { x: this.snake_body[0].x + this.dx, y: this.snake_body[0].y + this.dy };
         this.snake_body.unshift(head);
+        if (this.speed > 1){
+            this.speed -= 1;
+        } else if (this.speed > 0.01) {
+            this.speed -= 0.01;
+        } else {
+            // Keep constant speed 0.01
+        }
     }
 
 }

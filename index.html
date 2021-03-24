@@ -21,7 +21,7 @@
 
 <script>
     const board_border = 'GhostWhite';
-    const board_background = "#B9D980";
+    const board_background = "#c6ecd9";
 
     const snakeboard = document.getElementById("snakeboard");
     const snakeboard_ctx = snakeboard.getContext("2d");
@@ -71,7 +71,7 @@
             }
             renderActivityFrame();
             gameLoop();
-        }, 100)
+        }, snake.getSpeed())
     }
 
     function renderActivityFrame() {
