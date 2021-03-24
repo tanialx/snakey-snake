@@ -12,11 +12,43 @@
             margin: 0;
             padding: 0
         }
+        #viewport {
+            /**
+            * Position relative so that canvas elements
+            * inside of it will be relative to the parent
+            */
+            position: relative;
+        }
+
+        #viewport canvas {
+            /**
+            * Position absolute provides canvases to be able
+            * to be layered on top of each other
+            * Be sure to remember a z-index!
+            */
+            position: absolute;
+        }
+
+        canvas {
+            /**
+            * Set transparent to let any other canvases render through
+            */
+            background-color: transparent;
+        }
+        #snakeboard {
+            z-index: 2;
+        }
+        #bg_static {
+            z-index: 1;
+        }
     </style>
 </head>
 
 <body>
-    <canvas id="snakeboard"></canvas>
+    <div id='viewport'>
+        <canvas id="snakeboard"></canvas>
+        <canvas id="bg_static"></canvas>
+    </div>
 </body>
 
 <script>
@@ -45,9 +77,22 @@
 
     init();
 
-    function init(){
-        resetCanvas();
+    function init() {
+        renderStaticBackground();
         snake.render();
+    }
+
+    function renderStaticBackground(){
+        const bgStatic = document.getElementById("bg_static");
+        const bgStatic_ctx = bgStatic.getContext("2d");
+        bgStatic.width = window.innerWidth;
+        bgStatic.height = window.innerHeight;
+
+        bgStatic_ctx.fillStyle = board_background;
+        bgStatic_ctx.fillRect(0, 0, snakeboard.width, snakeboard.height);
+        bgStatic_ctx.lineWidth = 10;
+        bgStatic_ctx.strokeStyle = board_border;
+        bgStatic_ctx.strokeRect(0, 0, snakeboard.width, snakeboard.height);
     }
 
     function gameLoop() {
@@ -59,7 +104,6 @@
             if (snake.isPaused()) {
                 return;
             }
-            resetCanvas();
             snake.move();
             if (justEat) {
                 food.genFood();
@@ -75,6 +119,7 @@
     }
 
     function renderActivityFrame() {
+        snakeboard_ctx.clearRect(0, 0, snakeboard.width, snakeboard.height);
         food.render();
         snake.render();
     }
@@ -94,17 +139,6 @@
             return true;
         }
         return false;
-    }
-
-    function resetCanvas() {
-        //  Select the colour to fill the drawing
-        snakeboard_ctx.fillStyle = board_background;
-        // Draw a "filled" rectangle to cover the entire canvas
-        snakeboard_ctx.fillRect(0, 0, snakeboard.width, snakeboard.height);
-        // Draw a "border" around the entire canvas
-        snakeboard_ctx.lineWidth = 10;
-        snakeboard_ctx.strokeStyle = board_border;
-        snakeboard_ctx.strokeRect(0, 0, snakeboard.width, snakeboard.height);
     }
 
     function keyboardControl(event) {
