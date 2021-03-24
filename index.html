@@ -43,7 +43,12 @@
 
     document.addEventListener("keydown", keyboardControl);
 
-    gameLoop();
+    init();
+
+    function init(){
+        resetCanvas();
+        snake.render();
+    }
 
     function gameLoop() {
         if (isGameEnded()) {

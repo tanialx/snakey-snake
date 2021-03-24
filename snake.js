@@ -15,7 +15,7 @@ class Snake {
         this.step = 20;
         this.dx = this.step;
         this.dy = 0;
-        this.pause = false;
+        this.pause = true;
     }
 
     init() {
