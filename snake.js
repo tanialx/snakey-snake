@@ -3,7 +3,8 @@ class Snake {
     constructor(snakeboard_ctx, initialPosition) {
         this.snake_body = initialPosition;
         this.snake_col = '#adc2eb';
-        this.snake_border = '#336699';
+        this.snake_body.forEach(tile => tile.color = this.snake_col);
+        this.snake_border = '#000000';
         this.snake_tile_size = 20;
         this.snake_tile_corner_radius = 4;
         this.snake_eye_size = 2;
@@ -38,7 +39,7 @@ class Snake {
             snake_part.x, snake_part.y,
             this.snake_tile_size, this.snake_tile_size,
             this.snake_tile_corner_radius,
-            this.snake_col, this.snake_border,
+            snake_part.color, this.snake_border,
             2);
     }
 
@@ -120,7 +121,10 @@ class Snake {
         if (this.pause) {
             return;
         }
-        const head = { x: this.snake_body[0].x + this.dx, y: this.snake_body[0].y + this.dy };
+        const head = { x: this.snake_body[0].x + this.dx, y: this.snake_body[0].y + this.dy, color: this.snake_body[0].color };
+        for (var i = 0; i < this.snake_body.length - 1; i++) {
+            this.snake_body[i].color = this.snake_body[i + 1].color;
+        }
         this.snake_body.unshift(head);
         this.snake_body.pop();
     }
@@ -179,10 +183,10 @@ class Snake {
         }
     }
 
-    grow() {
-        const head = { x: this.snake_body[0].x + this.dx, y: this.snake_body[0].y + this.dy };
+    grow(nColor) {
+        const head = { x: this.snake_body[0].x + this.dx, y: this.snake_body[0].y + this.dy, color: nColor };
         this.snake_body.unshift(head);
-        if (this.speed > 1){
+        if (this.speed > 1) {
             this.speed -= 1;
         } else if (this.speed > 0.01) {
             this.speed -= 0.01;

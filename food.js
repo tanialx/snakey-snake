@@ -19,7 +19,7 @@ class Food {
         this.foodSize = getRandomInteger(this.minSize, this.maxSize);
         this.x = this.randomFoodPos(this.foodSize, this.margin, snakeboard.width - this.foodSize - this.margin);
         this.y = this.randomFoodPos(this.foodSize, this.margin, snakeboard.height - this.foodSize - this.margin);
-        this.color = randomColor();
+        this.color = randomPastelColor();
     }
 
     randomFoodPos(food_size, min_pos, max_pos) {
@@ -29,7 +29,7 @@ class Food {
     render() {
         this.ctx.save();
         this.ctx.fillStyle = this.color;
-        this.ctx.strokeStyle = "#ffffff";
+        this.ctx.strokeStyle = "#000000";
         this.ctx.lineWidth = 2;
         this.ctx.beginPath();
         this.ctx.arc(this.x, this.y, this.foodSize / 2, 0, 2 * Math.PI);

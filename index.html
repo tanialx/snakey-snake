@@ -68,12 +68,10 @@
     let snake = new Snake(snakeboard_ctx, [
         { x: 240, y: middle_y },
         { x: 220, y: middle_y },
-        { x: 200, y: middle_y },
-        { x: 180, y: middle_y },
-        { x: 160, y: middle_y }
+        { x: 200, y: middle_y }
     ]);
 
-    let food = new Food(snakeboard_ctx, 5, 30, 40);
+    let food = new Food(snakeboard_ctx, 5, 20, 40);
     let justEat = true;
 
     document.addEventListener("keydown", keyboardControl);
@@ -113,7 +111,7 @@
                 justEat = false;
             }
             if (snakeEating()) {
-                snake.grow();
+                snake.grow(food.color);
                 justEat = true;
             }
             renderActivityFrame();
