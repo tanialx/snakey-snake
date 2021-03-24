@@ -60,13 +60,18 @@
                 food.genFood();
                 justEat = false;
             }
-            food.drawFood();
             if (snakeEating()) {
                 snake.grow();
                 justEat = true;
             }
+            renderActivityFrame();
             gameLoop();
         }, 100)
+    }
+
+    function renderActivityFrame() {
+        food.render();
+        snake.render();
     }
 
     function snakeEating() {

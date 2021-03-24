@@ -19,19 +19,19 @@ class Snake {
     }
 
     init() {
-        this.redraw();
+        this.render();
     }
 
     isPaused() {
         return this.pause;
     }
 
-    redraw() {
-        this.snake_body.forEach(tile => this.redrawSnakePart(tile, this.ctx));
-        this.drawSnakeEyesAndTongue();
+    render() {
+        this.snake_body.forEach(tile => this.renderSnakePart(tile, this.ctx));
+        this.renderSnakeEyesAndTongue();
     }
 
-    redrawSnakePart(snake_part, ctx) {
+    renderSnakePart(snake_part, ctx) {
         drawRoundedSquare(ctx,
             snake_part.x, snake_part.y,
             this.snake_tile_w, this.snake_tile_h,
@@ -40,7 +40,7 @@ class Snake {
             2);
     }
 
-    drawSnakeEyesAndTongue() {
+    renderSnakeEyesAndTongue() {
         const head = this.snake_body[0];
         var eye_1 = {
             x: 0, y: 0
@@ -121,7 +121,6 @@ class Snake {
         const head = { x: this.snake_body[0].x + this.dx, y: this.snake_body[0].y + this.dy };
         this.snake_body.unshift(head);
         this.snake_body.pop();
-        this.redraw();
     }
 
     pauseOrResumeMoving() {
@@ -181,7 +180,6 @@ class Snake {
     grow() {
         const head = { x: this.snake_body[0].x + this.dx, y: this.snake_body[0].y + this.dy };
         this.snake_body.unshift(head);
-        this.redraw();
     }
 
 }

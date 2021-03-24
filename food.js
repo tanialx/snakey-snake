@@ -21,7 +21,7 @@ class Food {
         return Math.round((Math.random() * (max_pos - min_pos) + min_pos) / food_size) * food_size;
     }
 
-    drawFood() {
+    render() {
         this.ctx.fillStyle = 'Black';
         this.ctx.fillRect(this.x, this.y, this.foodSize, this.foodSize);
     }
