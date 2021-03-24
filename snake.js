@@ -7,6 +7,8 @@ class Snake {
         this.snake_tile_w = 20;
         this.snake_tile_h = 20;
         this.snake_tile_corner_radius = 4;
+        this.snake_eye_size = 2;
+        this.snake_eye_color = "black";
         this.ctx = snakeboard_ctx;
         this.step = 20;
         this.dx = this.step;
@@ -24,6 +26,7 @@ class Snake {
 
     redraw() {
         this.snake_body.forEach(tile => this.redrawSnakePart(tile, this.ctx));
+        this.drawSnakeEyes();
     }
 
     redrawSnakePart(snake_part, ctx) {
@@ -33,7 +36,39 @@ class Snake {
             this.snake_tile_corner_radius,
             this.snake_col, this.snake_border,
             2);
+    }
 
+    drawSnakeEyes() {
+        const head = this.snake_body[0];
+        var eye_1 = {
+            x: 0, y: 0
+        }, eye_2 = {
+            x: 0, y: 0
+        };
+        if (this.isMovingLeft()) {
+            eye_1.x = head.x + this.snake_tile_w / 4;
+            eye_2.x = eye_1.x;
+            eye_1.y = head.y + this.snake_tile_h / 4;
+            eye_2.y = head.y + this.snake_tile_h / 4 * 3;
+        } else if (this.isMovingRight()) {
+            eye_1.x = head.x + this.snake_tile_w / 4 * 3;
+            eye_2.x = eye_1.x;
+            eye_1.y = head.y + this.snake_tile_h / 4;
+            eye_2.y = head.y + this.snake_tile_h / 4 * 3;
+        } else if (this.isMovingUp()) {
+            eye_1.y = head.y + this.snake_tile_h / 4;
+            eye_2.y = eye_1.y;
+            eye_1.x = head.x + this.snake_tile_w / 4;
+            eye_2.x = head.x + this.snake_tile_w / 4 * 3;
+        } else {
+            eye_1.y = head.y + this.snake_tile_h / 4 * 3;
+            eye_2.y = eye_1.y;
+            eye_1.x = head.x + this.snake_tile_w / 4;
+            eye_2.x = head.x + this.snake_tile_w / 4 * 3;
+        }
+        this.ctx.fillStyle = this.snake_eye_color;
+        this.ctx.fillRect(eye_1.x, eye_1.y, this.snake_eye_size, this.snake_eye_size);
+        this.ctx.fillRect(eye_2.x, eye_2.y, this.snake_eye_size, this.snake_eye_size);
     }
 
     move() {
