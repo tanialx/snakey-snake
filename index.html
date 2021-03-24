@@ -12,6 +12,7 @@
             margin: 0;
             padding: 0
         }
+
         #viewport {
             /**
             * Position relative so that canvas elements
@@ -35,9 +36,11 @@
             */
             background-color: transparent;
         }
+
         #snakeboard {
             z-index: 2;
         }
+
         #bg_static {
             z-index: 1;
         }
@@ -70,7 +73,7 @@
         { x: 160, y: middle_y }
     ]);
 
-    let food = new Food(snakeboard_ctx, 10, 40);
+    let food = new Food(snakeboard_ctx, 5, 30, 40);
     let justEat = true;
 
     document.addEventListener("keydown", keyboardControl);
@@ -82,7 +85,7 @@
         snake.render();
     }
 
-    function renderStaticBackground(){
+    function renderStaticBackground() {
         const bgStatic = document.getElementById("bg_static");
         const bgStatic_ctx = bgStatic.getContext("2d");
         bgStatic.width = window.innerWidth;
@@ -126,16 +129,19 @@
 
     function snakeEating() {
         const foodCenter = {
-            x: food.getX() + food.getFoodSize() / 2,
-            y: food.getY() + food.getFoodSize() / 2
+            x: food.getX(),
+            y: food.getY()
         }
         const snakeHead = snake.head();
-        const snake_x1 = snakeHead.x;
-        const snake_x2 = snakeHead.x + snake.snake_tile_w;
-        const snake_y1 = snakeHead.y;
-        const snake_y2 = snakeHead.y + snake.snake_tile_h;
-        if (foodCenter.x >= snake_x1 && foodCenter.x <= snake_x2
-            && foodCenter.y >= snake_y1 && foodCenter.y <= snake_y2) {
+        const snakeHeadCenter = {
+            x: snakeHead.x + snake.snake_tile_size / 2,
+            y: snakeHead.y + snake.snake_tile_size / 2
+        }
+        const x_distance = snakeHeadCenter.x - foodCenter.x;
+        const y_distance = snakeHeadCenter.y - foodCenter.y;
+        const distance = x_distance * x_distance + y_distance * y_distance;
+        const eatingDistance = (snake.snake_tile_size + food.foodSize) / 2;
+        if (distance < eatingDistance*eatingDistance) {
             return true;
         }
         return false;

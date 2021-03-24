@@ -4,8 +4,7 @@ class Snake {
         this.snake_body = initialPosition;
         this.snake_col = '#adc2eb';
         this.snake_border = '#336699';
-        this.snake_tile_w = 20;
-        this.snake_tile_h = 20;
+        this.snake_tile_size = 20;
         this.snake_tile_corner_radius = 4;
         this.snake_eye_size = 2;
         this.snake_eye_color = "black";
@@ -37,7 +36,7 @@ class Snake {
     renderSnakePart(snake_part, ctx) {
         drawRoundedSquare(ctx,
             snake_part.x, snake_part.y,
-            this.snake_tile_w, this.snake_tile_h,
+            this.snake_tile_size, this.snake_tile_size,
             this.snake_tile_corner_radius,
             this.snake_col, this.snake_border,
             2);
@@ -56,45 +55,45 @@ class Snake {
             x3: 0, y3: 0
         }
         if (this.isMovingLeft()) {
-            eye_1.x = head.x + this.snake_tile_w / 4;
+            eye_1.x = head.x + this.snake_tile_size / 4;
             eye_2.x = eye_1.x;
-            eye_1.y = head.y + this.snake_tile_h / 4;
-            eye_2.y = head.y + this.snake_tile_h / 4 * 3;
+            eye_1.y = head.y + this.snake_tile_size / 4;
+            eye_2.y = head.y + this.snake_tile_size / 4 * 3;
             tongue.x1 = head.x;
-            tongue.y1 = head.y + this.snake_tile_w / 2;
+            tongue.y1 = head.y + this.snake_tile_size / 2;
             tongue.x2 = tongue.x1 - this.snake_tongue_size;
             tongue.y2 = tongue.y1 - this.snake_tongue_size;
             tongue.x3 = tongue.x1 - this.snake_tongue_size;
             tongue.y3 = tongue.y1 + this.snake_tongue_size;
         } else if (this.isMovingRight()) {
-            eye_1.x = head.x + this.snake_tile_w / 4 * 3;
+            eye_1.x = head.x + this.snake_tile_size / 4 * 3;
             eye_2.x = eye_1.x;
-            eye_1.y = head.y + this.snake_tile_h / 4;
-            eye_2.y = head.y + this.snake_tile_h / 4 * 3;
-            tongue.x1 = head.x + this.snake_tile_h;
-            tongue.y1 = head.y + this.snake_tile_w / 2;
+            eye_1.y = head.y + this.snake_tile_size / 4;
+            eye_2.y = head.y + this.snake_tile_size / 4 * 3;
+            tongue.x1 = head.x + this.snake_tile_size;
+            tongue.y1 = head.y + this.snake_tile_size / 2;
             tongue.x2 = tongue.x1 + this.snake_tongue_size;
             tongue.y2 = tongue.y1 + this.snake_tongue_size;
             tongue.x3 = tongue.x1 + this.snake_tongue_size;
             tongue.y3 = tongue.y1 - this.snake_tongue_size;
         } else if (this.isMovingUp()) {
-            eye_1.y = head.y + this.snake_tile_h / 4;
+            eye_1.y = head.y + this.snake_tile_size / 4;
             eye_2.y = eye_1.y;
-            eye_1.x = head.x + this.snake_tile_w / 4;
-            eye_2.x = head.x + this.snake_tile_w / 4 * 3;
-            tongue.x1 = head.x + this.snake_tile_w / 2;
+            eye_1.x = head.x + this.snake_tile_size / 4;
+            eye_2.x = head.x + this.snake_tile_size / 4 * 3;
+            tongue.x1 = head.x + this.snake_tile_size / 2;
             tongue.y1 = head.y;
             tongue.x2 = tongue.x1 + this.snake_tongue_size;
             tongue.y2 = tongue.y1 - this.snake_tongue_size;
             tongue.x3 = tongue.x1 - this.snake_tongue_size;
             tongue.y3 = tongue.y1 - this.snake_tongue_size;
         } else {
-            eye_1.y = head.y + this.snake_tile_h / 4 * 3;
+            eye_1.y = head.y + this.snake_tile_size / 4 * 3;
             eye_2.y = eye_1.y;
-            eye_1.x = head.x + this.snake_tile_w / 4;
-            eye_2.x = head.x + this.snake_tile_w / 4 * 3;
-            tongue.x1 = head.x + this.snake_tile_w / 2;
-            tongue.y1 = head.y + this.snake_tile_h;
+            eye_1.x = head.x + this.snake_tile_size / 4;
+            eye_2.x = head.x + this.snake_tile_size / 4 * 3;
+            tongue.x1 = head.x + this.snake_tile_size / 2;
+            tongue.y1 = head.y + this.snake_tile_size;
             tongue.x2 = tongue.x1 - this.snake_tongue_size;
             tongue.y2 = tongue.y1 + this.snake_tongue_size;
             tongue.x3 = tongue.x1 + this.snake_tongue_size;

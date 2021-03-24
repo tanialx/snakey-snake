@@ -30,3 +30,11 @@ drawRoundedSquare = function (ctx, x, y, width, height, radius, fill, stroke, li
     }
     ctx.restore();
 }
+
+function randomColor() {
+    return "#" + Math.floor(Math.random() * 16777215).toString(16);
+}
+
+function getRandomInteger(min, max) {
+    return Math.floor(Math.random() * (max - min)) + min;
+}
