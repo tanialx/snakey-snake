@@ -1,20 +1,30 @@
 class Snake {
 
-    constructor(snakeboard_ctx, initialPosition) {
-        this.snake_body = initialPosition;
+    constructor(snakeboard_ctx, initialPosition, initialTileSize) {
+        this.snake_tile_size = initialTileSize;
         this.snake_col = '#adc2eb';
-        this.snake_body.forEach(tile => tile.color = this.snake_col);
+        this.step = initialTileSize >= 20 ? 20 : initialTileSize;
+        this.dx = this.step;
+        this.dy = 0;
+        this.snake_body = [
+            {
+                x: initialPosition.x,
+                y: initialPosition.y,
+                color: this.snake_col
+            },
+            {
+                x: initialPosition.x - this.snake_tile_size,
+                y: initialPosition.y,
+                color: this.snake_col
+            }
+        ];
         this.snake_border = '#000000';
-        this.snake_tile_size = 20;
         this.snake_tile_corner_radius = 4;
         this.snake_eye_size = 2;
         this.snake_eye_color = "black";
         this.snake_tongue_size = 4;
         this.snake_tongue_color = "#c6538c";
         this.ctx = snakeboard_ctx;
-        this.step = 20;
-        this.dx = this.step;
-        this.dy = 0;
         this.pause = true;
         this.speed = 100;
     }

@@ -20,7 +20,8 @@
             */
             position: relative;
             left: 0;
-            width: 100vw; height: 100vh;
+            width: 100vw;
+            height: 100vh;
         }
 
         #viewport canvas {
@@ -68,11 +69,7 @@
 
     const middle_y = snakeboard.height / 2;
 
-    let snake = new Snake(snakeboard_ctx, [
-        { x: 240, y: middle_y },
-        { x: 220, y: middle_y },
-        { x: 200, y: middle_y }
-    ]);
+    let snake = new Snake(snakeboard_ctx, { x: 240, y: middle_y }, 20);
 
     let food = new Food(snakeboard_ctx, 5, 20, 40);
     let justEat = true;
@@ -142,7 +139,7 @@
         const y_distance = snakeHeadCenter.y - foodCenter.y;
         const distance = x_distance * x_distance + y_distance * y_distance;
         const eatingDistance = (snake.snake_tile_size + food.foodSize) / 2;
-        if (distance < eatingDistance*eatingDistance) {
+        if (distance < eatingDistance * eatingDistance) {
             return true;
         }
         return false;
