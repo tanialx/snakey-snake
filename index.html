@@ -4,7 +4,7 @@
 <head>
     <title>Snakey Snake</title>
     <script src="./snake.js"></script>
-    <script src="./food.js"></script>
+    <script src="./fruit.js"></script>
     <script src="./utils.js"></script>
     <style>
         body {
@@ -71,7 +71,7 @@
 
     let snake = new Snake(snakeboard_ctx, { x: 240, y: middle_y }, 20);
 
-    let food = new Food(snakeboard_ctx, 5, 20, 40);
+    let fruit = new Fruit(snakeboard_ctx, 5, 25, 40);
     let justEat = true;
 
     document.addEventListener("keydown", keyboardControl);
@@ -107,11 +107,11 @@
             }
             snake.move();
             if (justEat) {
-                food.genFood();
+                fruit.genFruit();
                 justEat = false;
             }
             if (snakeEating()) {
-                snake.grow(food.color);
+                snake.grow(fruit.color);
                 justEat = true;
             }
             renderActivityFrame();
@@ -121,24 +121,24 @@
 
     function renderActivityFrame() {
         snakeboard_ctx.clearRect(0, 0, snakeboard.width, snakeboard.height);
-        food.render();
+        fruit.render();
         snake.render();
     }
 
     function snakeEating() {
-        const foodCenter = {
-            x: food.getX(),
-            y: food.getY()
+        const fruitCenter = {
+            x: fruit.getX(),
+            y: fruit.getY()
         }
         const snakeHead = snake.head();
         const snakeHeadCenter = {
             x: snakeHead.x + snake.snake_tile_size / 2,
             y: snakeHead.y + snake.snake_tile_size / 2
         }
-        const x_distance = snakeHeadCenter.x - foodCenter.x;
-        const y_distance = snakeHeadCenter.y - foodCenter.y;
+        const x_distance = snakeHeadCenter.x - fruitCenter.x;
+        const y_distance = snakeHeadCenter.y - fruitCenter.y;
         const distance = x_distance * x_distance + y_distance * y_distance;
-        const eatingDistance = (snake.snake_tile_size + food.foodSize) / 2;
+        const eatingDistance = (snake.snake_tile_size + fruit.fruitSize) / 2;
         if (distance < eatingDistance * eatingDistance) {
             return true;
         }
