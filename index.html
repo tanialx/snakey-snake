@@ -19,6 +19,8 @@
             * inside of it will be relative to the parent
             */
             position: relative;
+            left: 0;
+            width: 100vw; height: 100vh;
         }
 
         #viewport canvas {
@@ -60,8 +62,9 @@
 
     const snakeboard = document.getElementById("snakeboard");
     const snakeboard_ctx = snakeboard.getContext("2d");
-    snakeboard.width = window.innerWidth;
-    snakeboard.height = window.innerHeight;
+    const vpRect = snakeboard.parentNode.getBoundingClientRect();
+    snakeboard.width = vpRect.width;
+    snakeboard.height = vpRect.height;
 
     const middle_y = snakeboard.height / 2;
 
@@ -86,8 +89,8 @@
     function renderStaticBackground() {
         const bgStatic = document.getElementById("bg_static");
         const bgStatic_ctx = bgStatic.getContext("2d");
-        bgStatic.width = window.innerWidth;
-        bgStatic.height = window.innerHeight;
+        bgStatic.width = vpRect.width;
+        bgStatic.height = vpRect.height;
 
         bgStatic_ctx.fillStyle = board_background;
         bgStatic_ctx.fillRect(0, 0, snakeboard.width, snakeboard.height);
