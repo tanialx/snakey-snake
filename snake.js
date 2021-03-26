@@ -1,10 +1,11 @@
 class Snake {
 
-    constructor(snakeboard_ctx, initialPosition, initialTileSize) {
+    constructor(snakeboard_ctx, initialPosition, initialTileSize, maxTileSize) {
         this.snake_tile_size = initialTileSize;
+        this.snake_max_tile_size = maxTileSize;
         this.snake_col = '#adc2eb';
-        this.step = initialTileSize >= 20 ? 20 : initialTileSize;
-        this.dx = this.step;
+        this.step = initialTileSize;
+        this.dx = 1;
         this.dy = 0;
         this.snake_body = [
             {
@@ -26,7 +27,7 @@ class Snake {
         this.snake_tongue_color = "#c6538c";
         this.ctx = snakeboard_ctx;
         this.pause = true;
-        this.speed = 100;
+        this.speed = 70;
     }
 
     getSpeed() { return this.speed; }
@@ -131,7 +132,7 @@ class Snake {
         if (this.pause) {
             return;
         }
-        const head = { x: this.snake_body[0].x + this.dx, y: this.snake_body[0].y + this.dy, color: this.snake_body[0].color };
+        const head = { x: this.snake_body[0].x + this.dx * this.step, y: this.snake_body[0].y + this.dy * this.step, color: this.snake_body[0].color };
         for (var i = 0; i < this.snake_body.length - 1; i++) {
             this.snake_body[i].color = this.snake_body[i + 1].color;
         }
@@ -168,19 +169,19 @@ class Snake {
     }
 
     isMovingLeft() {
-        return this.dx === - this.step;
+        return this.dx === -1;
     }
 
     isMovingRight() {
-        return this.dx === this.step;
+        return this.dx === 1;
     }
 
     isMovingUp() {
-        return this.dy === - this.step;
+        return this.dy === -1;
     }
 
     isMovingDown() {
-        return this.dy === this.step;
+        return this.dy === 1;
     }
 
     head() {
@@ -194,7 +195,7 @@ class Snake {
     }
 
     grow(nColor) {
-        const head = { x: this.snake_body[0].x + this.dx, y: this.snake_body[0].y + this.dy, color: nColor };
+        const head = { x: this.snake_body[0].x + this.dx * this.step, y: this.snake_body[0].y + this.dy * this.step, color: nColor };
         this.snake_body.unshift(head);
         if (this.speed > 1) {
             this.speed -= 1;
@@ -205,4 +206,48 @@ class Snake {
         }
     }
 
+    bodySizeIncrease() {
+        var newSnakeBody = [snake.head()];
+        var current_x = snake.head().x;
+        var current_y = snake.head().y;
+        for (var i = 1; i < this.snake_body.length; i++) {
+            const this_tile = {
+                x: this.snake_body[i].x,
+                y: this.snake_body[i].y,
+                col: this.snake_body[i].color
+            }
+            const prev_tile = {
+                x: this.snake_body[i - 1].x,
+                y: this.snake_body[i - 1].y
+            }
+            if (this_tile.x === prev_tile.x) {
+                if (this_tile.y < prev_tile.y) {
+                    current_y = prev_tile.y - this.snake_tile_size;
+                } else {
+                    current_y = prev_tile.y + this.snake_tile_size;
+                }
+            } else if (this_tile.y === prev_tile.y) {
+                if (this_tile.x < prev_tile.x) {
+                    current_x = prev_tile.x - this.snake_tile_size;
+                } else {
+                    current_x = prev_tile.x + this.snake_tile_size;
+                }
+            }
+            newSnakeBody.push({
+                x: current_x,
+                y: current_y,
+                color: this_tile.col
+            })
+        }
+        return newSnakeBody;
+    }
+
+    gainWeight() {
+        const offset = 1;
+        if (this.snake_tile_size < this.snake_max_tile_size) {
+            this.snake_tile_size += offset;
+            this.step = this.snake_tile_size;
+            this.snake_body = this.bodySizeIncrease();
+        }
+    }
 }

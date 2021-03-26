@@ -6,6 +6,7 @@
     <script src="./snake.js"></script>
     <script src="./fruit.js"></script>
     <script src="./utils.js"></script>
+    <script src="./donut.js"></script>
     <style>
         body {
             overflow: hidden;
@@ -69,10 +70,13 @@
 
     const middle_y = snakeboard.height / 2;
 
-    let snake = new Snake(snakeboard_ctx, { x: 240, y: middle_y }, 20);
+    let snake = new Snake(snakeboard_ctx, { x: 240, y: middle_y }, 10, 20);
 
     let fruit = new Fruit(snakeboard_ctx, 5, 25, 40);
-    let justEat = true;
+    let justEatFruit = false;
+
+    let donut = new Donut(snakeboard_ctx, 24, 40);
+    let justEatDonut = false;
 
     document.addEventListener("keydown", keyboardControl);
 
@@ -80,6 +84,8 @@
 
     function init() {
         renderStaticBackground();
+        fruit.genFruit();
+        donut.newDonut();
         snake.render();
     }
 
@@ -106,13 +112,16 @@
                 return;
             }
             snake.move();
-            if (justEat) {
-                fruit.genFruit();
-                justEat = false;
-            }
-            if (snakeEating()) {
+            const food = snakeEating();
+            if (food.includes("fruit")) {
                 snake.grow(fruit.color);
-                justEat = true;
+                justEatFruit = true;
+                fruit.genFruit();
+            }
+            if (food.includes("donut")) {
+                snake.gainWeight();
+                donut.newDonut();
+                justEatDonut = true;
             }
             renderActivityFrame();
             gameLoop();
@@ -122,23 +131,36 @@
     function renderActivityFrame() {
         snakeboard_ctx.clearRect(0, 0, snakeboard.width, snakeboard.height);
         fruit.render();
+        donut.render();
         snake.render();
     }
 
     function snakeEating() {
-        const fruitCenter = {
-            x: fruit.getX(),
-            y: fruit.getY()
-        }
+        var food = [];
+        if (eatingDistanceValid(snake, {
+            x: fruit.x,
+            y: fruit.y,
+            size: fruit.fruitSize
+        })) food.push("fruit");
+
+        if (eatingDistanceValid(snake, {
+            x: donut.x,
+            y: donut.y,
+            size: donut.size
+        })) food.push("donut");
+        return food;
+    }
+
+    function eatingDistanceValid(snake, food) {
         const snakeHead = snake.head();
         const snakeHeadCenter = {
             x: snakeHead.x + snake.snake_tile_size / 2,
             y: snakeHead.y + snake.snake_tile_size / 2
         }
-        const x_distance = snakeHeadCenter.x - fruitCenter.x;
-        const y_distance = snakeHeadCenter.y - fruitCenter.y;
+        const x_distance = snakeHeadCenter.x - food.x;
+        const y_distance = snakeHeadCenter.y - food.y;
         const distance = x_distance * x_distance + y_distance * y_distance;
-        const eatingDistance = (snake.snake_tile_size + fruit.fruitSize) / 2;
+        const eatingDistance = (snake.snake_tile_size + food.size) / 2;
         if (distance < eatingDistance * eatingDistance) {
             return true;
         }
