@@ -7,6 +7,7 @@
     <script src="./fruit.js"></script>
     <script src="./utils.js"></script>
     <script src="./donut.js"></script>
+    <script src="./bg.js"></script>
     <style>
         body {
             overflow: hidden;
@@ -59,9 +60,6 @@
 </body>
 
 <script>
-    const board_border = 'GhostWhite';
-    const board_background = "#c6ecd9";
-
     const snakeboard = document.getElementById("snakeboard");
     const snakeboard_ctx = snakeboard.getContext("2d");
     const vpRect = snakeboard.parentNode.getBoundingClientRect();
@@ -87,19 +85,6 @@
         fruit.genFruit();
         donut.newDonut();
         snake.render();
-    }
-
-    function renderStaticBackground() {
-        const bgStatic = document.getElementById("bg_static");
-        const bgStatic_ctx = bgStatic.getContext("2d");
-        bgStatic.width = vpRect.width;
-        bgStatic.height = vpRect.height;
-
-        bgStatic_ctx.fillStyle = board_background;
-        bgStatic_ctx.fillRect(0, 0, snakeboard.width, snakeboard.height);
-        bgStatic_ctx.lineWidth = 10;
-        bgStatic_ctx.strokeStyle = board_border;
-        bgStatic_ctx.strokeRect(0, 0, snakeboard.width, snakeboard.height);
     }
 
     function gameLoop() {
