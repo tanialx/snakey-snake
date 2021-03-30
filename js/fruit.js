@@ -1,21 +1,4 @@
-class Fruit {
-
-    constructor(canvas_ctx, max_size, min_size) {
-        this.ctx = canvas_ctx;
-        this.x = 0;
-        this.y = 0;
-        this.maxSize = max_size;
-        this.minSize = min_size;
-        this.fruitSize = min_size;
-        this.color = "#ffffff";
-    }
-
-    genFruit(boundingBox) {
-        this.fruitSize = getRandomInteger(this.minSize, this.maxSize);
-        this.x = getRandomInteger(boundingBox.x.min + this.fruitSize, boundingBox.x.max - this.fruitSize);
-        this.y = getRandomInteger(boundingBox.y.min + this.fruitSize, boundingBox.y.max - this.fruitSize);
-        this.color = randomPastelColor();
-    }
+class Fruit extends Food {
 
     render() {
         this.ctx.save();
@@ -25,15 +8,15 @@ class Fruit {
         this.ctx.strokeStyle = "#000000";
         this.ctx.lineWidth = 2;
         this.ctx.beginPath();
-        this.ctx.arc(this.x, this.y, this.fruitSize / 2, 0, 2 * Math.PI);
+        this.ctx.arc(this.x, this.y, this.size / 2, 0, 2 * Math.PI);
         this.ctx.stroke();
         this.ctx.fill();
 
         // Stalk
-        const offset = this.fruitSize / 10;
+        const offset = this.size / 10;
         const stalk_root = {
             x: this.x,
-            y: this.y - this.fruitSize / 4
+            y: this.y - this.size / 4
         }
         const stalk_mid = {
             x: stalk_root.x + 2 * offset,

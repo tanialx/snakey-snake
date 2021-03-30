@@ -7,8 +7,21 @@ snakeboard.height = vpRect.height;
 const middle_y = snakeboard.height / 2;
 
 let snake = new Snake(snakeboard_ctx, { x: 240, y: middle_y }, 10, 20);
-let fruit = new Fruit(snakeboard_ctx, 5, 25);
-let donut = new Donut(snakeboard_ctx, 24);
+let fruit = new Fruit(snakeboard_ctx, {
+    size: {
+        vary: true,
+        min: 5,
+        max: 25
+    },
+    type: 'fruit'
+});
+let donut = new Donut(snakeboard_ctx, {
+    size: {
+        vary: false,
+        fixed: 24
+    },
+    type: 'donut'
+});
 
 const generatedItemMargin = 40;
 const generatedItemBox = {
@@ -28,8 +41,8 @@ init();
 
 function init() {
     renderStaticBackground();
-    fruit.genFruit(generatedItemBox);
-    donut.newDonut(generatedItemBox);
+    fruit.new(generatedItemBox);
+    donut.new(generatedItemBox);
     snake.render();
 }
 
@@ -46,11 +59,11 @@ function gameLoop() {
         const food = snakeEating();
         if (food.includes("fruit")) {
             snake.grow(fruit.color);
-            fruit.genFruit(generatedItemBox);
+            fruit.new(generatedItemBox);
         }
         if (food.includes("donut")) {
             snake.gainWeight();
-            donut.newDonut(generatedItemBox);
+            donut.new(generatedItemBox);
         }
         renderActivityFrame();
         gameLoop();
@@ -69,7 +82,7 @@ function snakeEating() {
     if (eatingDistanceValid(snake, {
         x: fruit.x,
         y: fruit.y,
-        size: fruit.fruitSize
+        size: fruit.size
     })) food.push("fruit");
 
     if (eatingDistanceValid(snake, {
