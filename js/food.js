@@ -13,7 +13,7 @@ class Food {
         }
 
         this.type = foodOptions.type;
-        this.color = "#ffffff";
+        this.callback = foodOptions.callback;
     }
 
     new(boundingBox) {
@@ -23,7 +23,9 @@ class Food {
         this.color = randomPastelColor();
     }
 
-    render() {
+    render() {}
 
+    takeEffect() {
+        this.callback.eaten(this.color);
     }
 }

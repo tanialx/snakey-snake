@@ -7,21 +7,32 @@ snakeboard.height = vpRect.height;
 const middle_y = snakeboard.height / 2;
 
 let snake = new Snake(snakeboard_ctx, { x: 240, y: middle_y }, 10, 20);
-let fruit = new Fruit(snakeboard_ctx, {
+
+let foods = [new Fruit(snakeboard_ctx, {
     size: {
         vary: true,
         min: 5,
         max: 25
     },
-    type: 'fruit'
-});
-let donut = new Donut(snakeboard_ctx, {
+    type: 'fruit',
+    callback: {
+        eaten: function (c) {
+            snake.grow(c);
+        }
+    }
+}), new Donut(snakeboard_ctx, {
     size: {
         vary: false,
         fixed: 24
     },
-    type: 'donut'
-});
+    type: 'donut',
+    callback: {
+        eaten: function (c) {
+            snake.gainWeight();
+        }
+    }
+
+})];
 
 const generatedItemMargin = 40;
 const generatedItemBox = {
@@ -41,8 +52,7 @@ init();
 
 function init() {
     renderStaticBackground();
-    fruit.new(generatedItemBox);
-    donut.new(generatedItemBox);
+    foods.forEach(f => f.new(generatedItemBox));
     snake.render();
 }
 
@@ -56,15 +66,13 @@ function gameLoop() {
             return;
         }
         snake.move();
-        const food = snakeEating();
-        if (food.includes("fruit")) {
-            snake.grow(fruit.color);
-            fruit.new(generatedItemBox);
-        }
-        if (food.includes("donut")) {
-            snake.gainWeight();
-            donut.new(generatedItemBox);
-        }
+        const foodEaten = snakeEating();
+        foods.forEach(f => {
+            if (foodEaten.includes(f.type)) {
+                f.takeEffect();
+                f.new(generatedItemBox);
+            }
+        });
         renderActivityFrame();
         gameLoop();
     }, snake.speed)
@@ -72,25 +80,20 @@ function gameLoop() {
 
 function renderActivityFrame() {
     snakeboard_ctx.clearRect(0, 0, snakeboard.width, snakeboard.height);
-    fruit.render();
-    donut.render();
+    foods.forEach(f => f.render());
     snake.render();
 }
 
 function snakeEating() {
-    var food = [];
-    if (eatingDistanceValid(snake, {
-        x: fruit.x,
-        y: fruit.y,
-        size: fruit.size
-    })) food.push("fruit");
-
-    if (eatingDistanceValid(snake, {
-        x: donut.x,
-        y: donut.y,
-        size: donut.size
-    })) food.push("donut");
-    return food;
+    var foodEaten = [];
+    foods.forEach(f => {
+        if (eatingDistanceValid(snake, {
+            x: f.x,
+            y: f.y,
+            size: f.size
+        })) foodEaten.push(f.type);
+    });
+    return foodEaten;
 }
 
 function eatingDistanceValid(snake, food) {
