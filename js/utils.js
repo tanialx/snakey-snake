@@ -39,8 +39,12 @@ function getRandomInteger(min, max) {
     return Math.floor(Math.random() * (max - min)) + min;
 }
 
-function randomPastelColor(){ 
+function randomPastelColor() {
     return "hsl(" + 360 * Math.random() + ',' +
-               (25 + 70 * Math.random()) + '%,' + 
-               (85 + 10 * Math.random()) + '%)'
-  }
+        (25 + 70 * Math.random()) + '%,' +
+        (85 + 10 * Math.random()) + '%)'
+}
+
+function randomPosition(size, min_pos, max_pos) {
+    return Math.round((Math.random() * (max_pos - min_pos) + min_pos) / size) * size;
+}

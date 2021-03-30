@@ -1,29 +1,20 @@
 class Fruit {
 
-    constructor(canvas_ctx, max_size, min_size, margin) {
+    constructor(canvas_ctx, max_size, min_size) {
         this.ctx = canvas_ctx;
         this.x = 0;
         this.y = 0;
-        this.margin = margin;
         this.maxSize = max_size;
         this.minSize = min_size;
         this.fruitSize = min_size;
         this.color = "#ffffff";
     }
 
-    getX() { return this.x; }
-    getY() { return this.y; }
-    getFruitSize() { return this.fruitSize; }
-
-    genFruit() {
+    genFruit(boundingBox) {
         this.fruitSize = getRandomInteger(this.minSize, this.maxSize);
-        this.x = this.randomFruitPos(this.fruitSize, this.margin, snakeboard.width - this.fruitSize - this.margin);
-        this.y = this.randomFruitPos(this.fruitSize, this.margin, snakeboard.height - this.fruitSize - this.margin);
+        this.x = getRandomInteger(boundingBox.x.min + this.fruitSize, boundingBox.x.max - this.fruitSize);
+        this.y = getRandomInteger(boundingBox.y.min + this.fruitSize, boundingBox.y.max - this.fruitSize);
         this.color = randomPastelColor();
-    }
-
-    randomFruitPos(fruit_size, min_pos, max_pos) {
-        return Math.round((Math.random() * (max_pos - min_pos) + min_pos) / fruit_size) * fruit_size;
     }
 
     render() {

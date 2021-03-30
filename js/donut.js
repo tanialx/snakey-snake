@@ -1,26 +1,17 @@
 class Donut {
 
-    constructor(canvas_ctx, size, margin) {
+    constructor(canvas_ctx, size) {
         this.ctx = canvas_ctx;
         this.x = 0;
         this.y = 0;
-        this.margin = margin;
         this.size = size;
         this.creamColor = "#ffffff";
     }
 
-    getX() { return this.x; }
-    getY() { return this.y; }
-    getSize() { return this.size; }
-
-    newDonut() {
-        this.x = this.randomPos(this.size, this.margin, snakeboard.width - this.size - this.margin);
-        this.y = this.randomPos(this.size, this.margin, snakeboard.height - this.size - this.margin);
+    newDonut(boundingBox) {
+        this.x = randomPosition(this.size, boundingBox.x.min, boundingBox.x.max - this.size);
+        this.y = randomPosition(this.size, boundingBox.y.min, boundingBox.y.max - this.size);
         this.creamColor = randomPastelColor();
-    }
-
-    randomPos(size, min_pos, max_pos) {
-        return Math.round((Math.random() * (max_pos - min_pos) + min_pos) / size) * size;
     }
 
     render() {

@@ -1,5 +1,7 @@
 class Snake {
 
+    #snake_body;
+
     constructor(snakeboard_ctx, initialPosition, initialTileSize, maxTileSize) {
         this.snake_tile_size = initialTileSize;
         this.snake_max_tile_size = maxTileSize;
@@ -7,7 +9,7 @@ class Snake {
         this.step = initialTileSize;
         this.dx = 1;
         this.dy = 0;
-        this.snake_body = [
+        this.#snake_body = [
             {
                 x: initialPosition.x,
                 y: initialPosition.y,
@@ -30,22 +32,16 @@ class Snake {
         this.speed = 70;
     }
 
-    getSpeed() { return this.speed; }
-
     init() {
         this.render();
     }
 
-    isPaused() {
-        return this.pause;
-    }
-
     render() {
-        this.snake_body.forEach(tile => this.renderSnakePart(tile, this.ctx));
-        this.renderSnakeEyesAndTongue();
+        this.#snake_body.forEach(tile => this.#renderSnakePart(tile, this.ctx));
+        this.#renderSnakeEyesAndTongue();
     }
 
-    renderSnakePart(snake_part, ctx) {
+    #renderSnakePart(snake_part, ctx) {
         drawRoundedSquare(ctx,
             snake_part.x, snake_part.y,
             this.snake_tile_size, this.snake_tile_size,
@@ -54,8 +50,8 @@ class Snake {
             2);
     }
 
-    renderSnakeEyesAndTongue() {
-        const head = this.snake_body[0];
+    #renderSnakeEyesAndTongue() {
+        const head = this.#snake_body[0];
         var eye_1 = {
             x: 0, y: 0
         }, eye_2 = {
@@ -132,30 +128,27 @@ class Snake {
         if (this.pause) {
             return;
         }
-        const head = { x: this.snake_body[0].x + this.dx * this.step, y: this.snake_body[0].y + this.dy * this.step, color: this.snake_body[0].color };
-        for (var i = 0; i < this.snake_body.length - 1; i++) {
-            this.snake_body[i].color = this.snake_body[i + 1].color;
+        const head = { x: this.#snake_body[0].x + this.dx * this.step, y: this.#snake_body[0].y + this.dy * this.step, color: this.#snake_body[0].color };
+        for (var i = 0; i < this.#snake_body.length - 1; i++) {
+            this.#snake_body[i].color = this.#snake_body[i + 1].color;
         }
-        this.snake_body.unshift(head);
-        this.snake_body.pop();
+        this.#snake_body.unshift(head);
+        this.#snake_body.pop();
     }
 
     pauseOrResumeMoving() {
         this.pause = !this.pause;
     }
 
-    dx() { return this.dx; }
-    dy() { return this.dy; }
-
     turnLeft() {
-        this.turnMult(1);
+        this.#turnMult(1);
     }
 
     turnRight() {
-        this.turnMult(-1);
+        this.#turnMult(-1);
     }
 
-    turnMult(mult) {
+    #turnMult(mult) {
         if (this.isMovingRight() || this.isMovingLeft()) {
             this.dy = this.dx * mult * -1;
             this.dx = 0;
@@ -185,18 +178,18 @@ class Snake {
     }
 
     head() {
-        return this.snake_body[0];
+        return this.#snake_body[0];
     }
 
     isCollide() {
-        for (var i = 4; i < this.snake_body.length; i++) {
-            return this.snake_body[i].x === this.snake_body[0].x && this.snake_body[i].y === this.snake_body[0].y;
+        for (var i = 4; i < this.#snake_body.length; i++) {
+            return this.#snake_body[i].x === this.#snake_body[0].x && this.#snake_body[i].y === this.#snake_body[0].y;
         }
     }
 
     grow(nColor) {
-        const head = { x: this.snake_body[0].x + this.dx * this.step, y: this.snake_body[0].y + this.dy * this.step, color: nColor };
-        this.snake_body.unshift(head);
+        const head = { x: this.#snake_body[0].x + this.dx * this.step, y: this.#snake_body[0].y + this.dy * this.step, color: nColor };
+        this.#snake_body.unshift(head);
         if (this.speed > 1) {
             this.speed -= 1;
         } else if (this.speed > 0.01) {
@@ -206,19 +199,19 @@ class Snake {
         }
     }
 
-    bodySizeIncrease() {
-        var newSnakeBody = [snake.head()];
-        var current_x = snake.head().x;
-        var current_y = snake.head().y;
-        for (var i = 1; i < this.snake_body.length; i++) {
+    #bodySizeIncrease() {
+        const newSnakeBody = [snake.head()];
+        let current_x = snake.head().x;
+        let current_y = snake.head().y;
+        for (let i = 1; i < this.#snake_body.length; i++) {
             const this_tile = {
-                x: this.snake_body[i].x,
-                y: this.snake_body[i].y,
-                col: this.snake_body[i].color
+                x: this.#snake_body[i].x,
+                y: this.#snake_body[i].y,
+                col: this.#snake_body[i].color
             }
             const prev_tile = {
-                x: this.snake_body[i - 1].x,
-                y: this.snake_body[i - 1].y
+                x: this.#snake_body[i - 1].x,
+                y: this.#snake_body[i - 1].y
             }
             if (this_tile.x === prev_tile.x) {
                 if (this_tile.y < prev_tile.y) {
@@ -247,7 +240,7 @@ class Snake {
         if (this.snake_tile_size < this.snake_max_tile_size) {
             this.snake_tile_size += offset;
             this.step = this.snake_tile_size;
-            this.snake_body = this.bodySizeIncrease();
+            this.#snake_body = this.#bodySizeIncrease();
         }
     }
 }

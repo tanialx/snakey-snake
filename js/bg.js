@@ -17,9 +17,9 @@ function renderStaticBackground() {
     bgStatic_ctx.strokeRect(0, 0, bgStatic.width, bgStatic.height);
     bgStatic_ctx.strokeStyle = grassColor;
     bgStatic_ctx.lineWidth = 1;
-    for (var i = 0; i <= 20; ++i) {
-        var x = getRandomInteger(20, bgStatic.width - 20);
-        var y = getRandomInteger(20, bgStatic.height - 20);
+    for (let i = 0; i <= 20; ++i) {
+        let x = getRandomInteger(20, bgStatic.width - 20);
+        let y = getRandomInteger(20, bgStatic.height - 20);
         bgStatic_ctx.beginPath();
         bgStatic_ctx.moveTo(x, y);
         bgStatic_ctx.quadraticCurveTo(x - 1, y - 6, x - 5, y - 5);
