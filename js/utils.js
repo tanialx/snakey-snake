@@ -44,7 +44,3 @@ function randomPastelColor() {
         (25 + 70 * Math.random()) + '%,' +
         (85 + 10 * Math.random()) + '%)'
 }
-
-function randomPosition(size, min_pos, max_pos) {
-    return Math.round((Math.random() * (max_pos - min_pos) + min_pos) / size) * size;
-}

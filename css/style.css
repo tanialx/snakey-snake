@@ -1,10 +1,12 @@
 body {
     overflow: hidden;
     margin: 0;
-    padding: 0
+    padding: 0;
+    width: 100vw;
+    height: 100vh
 }
 
-#viewport {
+#gameboard {
     /**
     * Position relative so that canvas elements
     * inside of it will be relative to the parent
@@ -15,7 +17,7 @@ body {
     height: 100vh;
 }
 
-#viewport canvas {
+#gameboard canvas {
     /**
     * Position absolute provides canvases to be able
     * to be layered on top of each other

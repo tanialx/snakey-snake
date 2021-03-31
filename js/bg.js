@@ -1,13 +1,7 @@
-function renderStaticBackground() {
+function renderStaticBackground(bgStatic_ctx) {
     const board_border = 'GhostWhite';
     const board_background = "#d9f2e6";
     const grassColor = '#669999';
-    const bgStatic = document.getElementById("bg_static");
-    const bgStatic_ctx = bgStatic.getContext("2d");
-    const vpRect = bgStatic.parentNode.getBoundingClientRect();
-    bgStatic.width = vpRect.width;
-    bgStatic.height = vpRect.height;
-
     // Draw grass
 
     bgStatic_ctx.strokeStyle = board_border;
@@ -41,5 +35,4 @@ function renderStaticBackground() {
         bgStatic_ctx.quadraticCurveTo(x + 9, y - 5, x + 12, y - 4);
         bgStatic_ctx.stroke();
     }
-
 }

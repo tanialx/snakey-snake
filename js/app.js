@@ -1,37 +1,36 @@
 const snakeboard = document.getElementById("snakeboard");
-const snakeboard_ctx = snakeboard.getContext("2d");
 const vpRect = snakeboard.parentNode.getBoundingClientRect();
+const bgStatic = document.getElementById("bg_static");
 snakeboard.width = vpRect.width;
 snakeboard.height = vpRect.height;
+bgStatic.width = vpRect.width;
+bgStatic.height = vpRect.height;
+
+const snakeboard_ctx = snakeboard.getContext("2d");
+const bgStatic_ctx = bgStatic.getContext("2d");
 
 const middle_y = snakeboard.height / 2;
 
-let snake = new Snake(snakeboard_ctx, { x: 240, y: middle_y }, 10, 20);
+let snake = new Snake({ x: 240, y: middle_y }, 10, 20);
 
-let foods = [new Fruit(snakeboard_ctx, {
+let foods = [new Fruit({
     size: {
-        vary: true,
         min: 5,
         max: 25
     },
     type: 'fruit',
     callback: {
-        eaten: function (c) {
-            snake.grow(c);
-        }
+        eaten: c => snake.grow(c)
     }
-}), new Donut(snakeboard_ctx, {
+}), new Donut({
     size: {
-        vary: false,
-        fixed: 24
+        min: 24,
+        max: 24
     },
     type: 'donut',
     callback: {
-        eaten: function (c) {
-            snake.gainWeight();
-        }
+        eaten: c => snake.gainWeight()
     }
-
 })];
 
 const generatedItemMargin = 40;
@@ -51,9 +50,9 @@ document.addEventListener("keydown", keyboardControl);
 init();
 
 function init() {
-    renderStaticBackground();
+    renderStaticBackground(bgStatic_ctx);
     foods.forEach(f => f.new(generatedItemBox));
-    snake.render();
+    snake.render(snakeboard_ctx);
 }
 
 function gameLoop() {
@@ -80,8 +79,8 @@ function gameLoop() {
 
 function renderActivityFrame() {
     snakeboard_ctx.clearRect(0, 0, snakeboard.width, snakeboard.height);
-    foods.forEach(f => f.render());
-    snake.render();
+    foods.forEach(f => f.render(snakeboard_ctx));
+    snake.render(snakeboard_ctx);
 }
 
 function snakeEating() {
