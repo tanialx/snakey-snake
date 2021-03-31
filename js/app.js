@@ -1,14 +1,37 @@
 const snakeboard = document.getElementById("snakeboard");
-const snakeboard_ctx = snakeboard.getContext("2d");
 const vpRect = snakeboard.parentNode.getBoundingClientRect();
+const bgStatic = document.getElementById("bg_static");
 snakeboard.width = vpRect.width;
 snakeboard.height = vpRect.height;
+bgStatic.width = vpRect.width;
+bgStatic.height = vpRect.height;
+
+const snakeboard_ctx = snakeboard.getContext("2d");
+const bgStatic_ctx = bgStatic.getContext("2d");
 
 const middle_y = snakeboard.height / 2;
 
-let snake = new Snake(snakeboard_ctx, { x: 240, y: middle_y }, 10, 20);
-let fruit = new Fruit(snakeboard_ctx, 5, 25);
-let donut = new Donut(snakeboard_ctx, 24);
+let snake = new Snake({ x: 240, y: middle_y }, 10, 20);
+
+let foods = [new Fruit({
+    size: {
+        min: 5,
+        max: 25
+    },
+    type: 'fruit',
+    callback: {
+        eaten: c => snake.grow(c)
+    }
+}), new Donut({
+    size: {
+        min: 24,
+        max: 24
+    },
+    type: 'donut',
+    callback: {
+        eaten: c => snake.gainWeight()
+    }
+})];
 
 const generatedItemMargin = 40;
 const generatedItemBox = {
@@ -27,10 +50,9 @@ document.addEventListener("keydown", keyboardControl);
 init();
 
 function init() {
-    renderStaticBackground();
-    fruit.genFruit(generatedItemBox);
-    donut.newDonut(generatedItemBox);
-    snake.render();
+    renderStaticBackground(bgStatic_ctx);
+    foods.forEach(f => f.new(generatedItemBox));
+    snake.render(snakeboard_ctx);
 }
 
 function gameLoop() {
@@ -43,15 +65,13 @@ function gameLoop() {
             return;
         }
         snake.move();
-        const food = snakeEating();
-        if (food.includes("fruit")) {
-            snake.grow(fruit.color);
-            fruit.genFruit(generatedItemBox);
-        }
-        if (food.includes("donut")) {
-            snake.gainWeight();
-            donut.newDonut(generatedItemBox);
-        }
+        const foodEaten = snakeEating();
+        foods.forEach(f => {
+            if (foodEaten.includes(f.type)) {
+                f.takeEffect();
+                f.new(generatedItemBox);
+            }
+        });
         renderActivityFrame();
         gameLoop();
     }, snake.speed)
@@ -59,25 +79,20 @@ function gameLoop() {
 
 function renderActivityFrame() {
     snakeboard_ctx.clearRect(0, 0, snakeboard.width, snakeboard.height);
-    fruit.render();
-    donut.render();
-    snake.render();
+    foods.forEach(f => f.render(snakeboard_ctx));
+    snake.render(snakeboard_ctx);
 }
 
 function snakeEating() {
-    var food = [];
-    if (eatingDistanceValid(snake, {
-        x: fruit.x,
-        y: fruit.y,
-        size: fruit.fruitSize
-    })) food.push("fruit");
-
-    if (eatingDistanceValid(snake, {
-        x: donut.x,
-        y: donut.y,
-        size: donut.size
-    })) food.push("donut");
-    return food;
+    var foodEaten = [];
+    foods.forEach(f => {
+        if (eatingDistanceValid(snake, {
+            x: f.x,
+            y: f.y,
+            size: f.size
+        })) foodEaten.push(f.type);
+    });
+    return foodEaten;
 }
 
 function eatingDistanceValid(snake, food) {

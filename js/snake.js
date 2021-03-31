@@ -2,11 +2,10 @@ class Snake {
 
     #snake_body;
 
-    constructor(snakeboard_ctx, initialPosition, initialTileSize, maxTileSize) {
+    constructor(initialPosition, initialTileSize, maxTileSize) {
         this.snake_tile_size = initialTileSize;
         this.snake_max_tile_size = maxTileSize;
         this.snake_col = '#adc2eb';
-        this.step = initialTileSize;
         this.dx = 1;
         this.dy = 0;
         this.#snake_body = [
@@ -27,18 +26,21 @@ class Snake {
         this.snake_eye_color = "black";
         this.snake_tongue_size = 4;
         this.snake_tongue_color = "#c6538c";
-        this.ctx = snakeboard_ctx;
         this.pause = true;
         this.speed = 70;
+    }
+
+    #step() {
+        return this.snake_tile_size;
     }
 
     init() {
         this.render();
     }
 
-    render() {
-        this.#snake_body.forEach(tile => this.#renderSnakePart(tile, this.ctx));
-        this.#renderSnakeEyesAndTongue();
+    render(canvas_ctx) {
+        this.#snake_body.forEach(tile => this.#renderSnakePart(tile, canvas_ctx));
+        this.#renderSnakeEyesAndTongue(canvas_ctx);
     }
 
     #renderSnakePart(snake_part, ctx) {
@@ -50,7 +52,7 @@ class Snake {
             2);
     }
 
-    #renderSnakeEyesAndTongue() {
+    #renderSnakeEyesAndTongue(canvas_ctx) {
         const head = this.#snake_body[0];
         var eye_1 = {
             x: 0, y: 0
@@ -107,28 +109,28 @@ class Snake {
             tongue.x3 = tongue.x1 + this.snake_tongue_size;
             tongue.y3 = tongue.y1 + this.snake_tongue_size;
         }
-        this.ctx.save();
+        canvas_ctx.save();
 
-        this.ctx.fillStyle = this.snake_eye_color;
-        this.ctx.fillRect(eye_1.x, eye_1.y, this.snake_eye_size, this.snake_eye_size);
-        this.ctx.fillRect(eye_2.x, eye_2.y, this.snake_eye_size, this.snake_eye_size);
+        canvas_ctx.fillStyle = this.snake_eye_color;
+        canvas_ctx.fillRect(eye_1.x, eye_1.y, this.snake_eye_size, this.snake_eye_size);
+        canvas_ctx.fillRect(eye_2.x, eye_2.y, this.snake_eye_size, this.snake_eye_size);
 
-        this.ctx.strokeStyle = this.snake_tongue_color;
-        this.ctx.lineWidth = 1;
-        this.ctx.beginPath();
-        this.ctx.moveTo(tongue.x2, tongue.y2);
-        this.ctx.lineTo(tongue.x1, tongue.y1);
-        this.ctx.lineTo(tongue.x3, tongue.y3);
-        this.ctx.stroke();
+        canvas_ctx.strokeStyle = this.snake_tongue_color;
+        canvas_ctx.lineWidth = 1;
+        canvas_ctx.beginPath();
+        canvas_ctx.moveTo(tongue.x2, tongue.y2);
+        canvas_ctx.lineTo(tongue.x1, tongue.y1);
+        canvas_ctx.lineTo(tongue.x3, tongue.y3);
+        canvas_ctx.stroke();
 
-        this.ctx.restore();
+        canvas_ctx.restore();
     }
 
     move() {
         if (this.pause) {
             return;
         }
-        const head = { x: this.#snake_body[0].x + this.dx * this.step, y: this.#snake_body[0].y + this.dy * this.step, color: this.#snake_body[0].color };
+        const head = { x: this.#snake_body[0].x + this.dx * this.#step(), y: this.#snake_body[0].y + this.dy * this.#step(), color: this.#snake_body[0].color };
         for (var i = 0; i < this.#snake_body.length - 1; i++) {
             this.#snake_body[i].color = this.#snake_body[i + 1].color;
         }
@@ -188,7 +190,7 @@ class Snake {
     }
 
     grow(nColor) {
-        const head = { x: this.#snake_body[0].x + this.dx * this.step, y: this.#snake_body[0].y + this.dy * this.step, color: nColor };
+        const head = { x: this.#snake_body[0].x + this.dx * this.#step(), y: this.#snake_body[0].y + this.dy * this.#step(), color: nColor };
         this.#snake_body.unshift(head);
         if (this.speed > 1) {
             this.speed -= 1;
@@ -239,7 +241,6 @@ class Snake {
         const offset = 1;
         if (this.snake_tile_size < this.snake_max_tile_size) {
             this.snake_tile_size += offset;
-            this.step = this.snake_tile_size;
             this.#snake_body = this.#bodySizeIncrease();
         }
     }
