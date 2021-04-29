@@ -163,6 +163,21 @@ class Snake {
         this.#snake_body.pop();
     }
 
+    /**
+     * Reset head position for snake to come back to canvas
+     */
+    comeBackAt(x, y) {
+        let head = this.head()
+        head.x = x
+        head.y = y
+        // Stack other body's tiles together
+        // They would be resolved in subsequent moves by move() function
+        for (var i = 1; i < this.#snake_body.length - 1; i++) {
+            this.#snake_body[i].x = x - this.dx * this.#step
+            this.#snake_body[i].y = y - this.dy * this.#step
+        }
+    }
+
     pauseOrResumeMoving() {
         this.pause = !this.pause;
     }
@@ -204,8 +219,28 @@ class Snake {
         return this.dy === 1;
     }
 
+    /**
+     * Get snake's head tile
+     * @returns the first tile in snake's body
+     */
     head() {
         return this.#snake_body[0];
+    }
+
+    /**
+     * Get snake's tail tile
+     * @returns the last tile in snake's body
+     */
+    tail() {
+        return this.#snake_body[this.#snake_body.length - 1]
+    }
+
+    /**
+     * Get snake's neck tile
+     * @returns the second tile in snake's body
+     */
+    neck() {
+        return this.#snake_body[1];
     }
 
     /**

@@ -7,9 +7,9 @@ This project is where I play around with `<canvas>`, do various drawing, or expe
 ### Game rule
 
 - Move snake with 4 arrow keys.
-- Game-over if snake hits 4 walls (top, left, bottom, right) -> This rule is boring, should be removed soon
+- ~~Game-over if snake hits 4 walls (top, left, bottom, right) -> This rule is boring, should be removed soon~~ If snake goes outside canvas, it's gonna come back from the opposite wall
 - Snake gains length and speed after eating `fruits`
-- Snake gains weight after eating `donuts` until its reach final width
+- Snake gains weight after eating `donuts`; when it reaches its adult tile's size, weight gain slows down significantly
 
 ### Refs
 

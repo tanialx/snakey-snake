@@ -19,10 +19,10 @@ const fruitEatenCallback = c => snake.grow(c)
 const donutEatenCallback = () => snake.gainWeight()
 {
     for (let i = 0; i < 10; i++) {
-        foods.push(new Fruit({ size: { min: 5, max: 25 }, type: 'fruit', callback: { eaten: fruitEatenCallback }}))
+        foods.push(new Fruit({ size: { min: 5, max: 25 }, type: 'fruit', callback: { eaten: fruitEatenCallback } }))
     }
     for (let i = 0; i < 5; i++) {
-        foods.push(new Donut({ size: { min: 24, max: 24 }, type: 'donut', callback: { eaten: donutEatenCallback }}))
+        foods.push(new Donut({ size: { min: 24, max: 24 }, type: 'donut', callback: { eaten: donutEatenCallback } }))
     }
 }
 /*
@@ -64,28 +64,51 @@ function init() {
  */
 function gameLoop() {
     setTimeout(function onTick() {
+        /*
+         * First, check game state
+         * - Is it ended?
+         * - Is it paused?
+         */
         if (isGameEnded()) {
             alert('Game over');
             return;
         }
-        /*
-         * there's no need to keep re-rendering activity frame(s) when there's no change
-         * so 'return' here
-         * this loop needs to be triggered explicitly in keyboardControl function
-         * when game is requested to resume
-         */
         if (snake.pause) {
+            /*
+            * there's no need to keep re-rendering activity frame(s) when there's no change
+            * so 'return' here
+            * this loop needs to be triggered explicitly in keyboardControl function
+            * when game is requested to resume
+            */
             return;
         }
+
+        /* Move the snake one step in its current direction */
         snake.move();
+
+        /* Check if any food is eaten due to previous one step taken */
         const foodEaten = snakeEating();
+
+        /*
+         * If one or more food is eaten (foods' positions can be duplicated, so the snake 
+         * is be able to eat more than one food in a row):
+         * - apply the effect it has on snake
+         * - replace the food eaten with a newly one generated at a random position
+         */
         foods.forEach(f => {
             if (foodEaten.includes(f)) {
                 f.takeEffect();
                 f.new(generatedItemBox);
             }
         });
+
+        /* re-position snake at canvas margin if it has almost fully gone outside of canvas */
+        comebackIfSnakeGoOutsideCanvas()
+
+        /* render updates above on canvas */
         renderActivityFrame();
+
+        /* re-run this process after a period of time (based-on snake's speed) */
         gameLoop();
     }, snake.speed)
 }
@@ -164,21 +187,29 @@ function keyboardControl(event) {
      * but SNAKE object only understands 'turn-left' and 'turn-right', hence the requested direction
      * needs to be translated to snake's language first
      */
-    if (keyPressed === KEY_LEFT) {
-        if (snake.isMovingUp()) snake.turnLeft();
-        if (snake.isMovingDown()) snake.turnRight();
-    }
-    if (keyPressed === KEY_RIGHT) {
-        if (snake.isMovingUp()) snake.turnRight();
-        if (snake.isMovingDown()) snake.turnLeft();
-    }
-    if (keyPressed === KEY_UP) {
-        if (snake.isMovingLeft()) snake.turnRight();
-        if (snake.isMovingRight()) snake.turnLeft();
-    }
-    if (keyPressed === KEY_DOWN) {
-        if (snake.isMovingLeft()) snake.turnLeft();
-        if (snake.isMovingRight()) snake.turnRight();
+    if (isSnakeNeckVisible()) {
+        /*
+         * only accept snake's movement keyboard request
+         * if snake's head & neck are both visible on screen
+         * in case snake goes outside of canvas boundaries and not yet fully come back
+         */
+        if (keyPressed === KEY_LEFT) {
+            if (snake.isMovingUp()) snake.turnLeft();
+            if (snake.isMovingDown()) snake.turnRight();
+        }
+        if (keyPressed === KEY_RIGHT) {
+            if (snake.isMovingUp()) snake.turnRight();
+            if (snake.isMovingDown()) snake.turnLeft();
+        }
+        if (keyPressed === KEY_UP) {
+            if (snake.isMovingLeft()) snake.turnRight();
+            if (snake.isMovingRight()) snake.turnLeft();
+        }
+        if (keyPressed === KEY_DOWN) {
+            if (snake.isMovingLeft()) snake.turnLeft();
+            if (snake.isMovingRight()) snake.turnRight();
+        }
+
     }
 
     /*
@@ -201,4 +232,41 @@ function isGameEnded() {
      * @todo: (maybe) some game end condition here
      */
     return false
+}
+
+function isSnakeHeadVisible() {
+    return isSnakeTileVisible(snake.head())
+}
+
+function isSnakeNeckVisible() {
+    return isSnakeTileVisible(snake.neck())
+}
+
+function isSnakeTileVisible(tile) {
+    const snakeTileSize = snake.snake_tile_size
+    return tile.x > 0 && tile.x < snakeboard.width - snakeTileSize && tile.y > 0 && tile.y < snakeboard.height - snakeTileSize
+}
+
+/**
+ * Check if snake has gone outside of canvas and re-position the snake to come back to canvas if
+ * - its head is fully gone from canvas, and
+ * - its tail has just gone outside of canvas boundaries
+ */
+function comebackIfSnakeGoOutsideCanvas() {
+    const snakeTileSize = snake.snake_tile_size
+    if (!isSnakeHeadVisible()) {
+        const snakeTail = snake.tail()
+        if (snakeTail.x < -snakeTileSize) { // outside of left wall -> come back from right wall
+            snake.comeBackAt(snakeboard.width - snakeTileSize, snakeboard.height - snakeTail.y - snakeTileSize)
+        }
+        if (snakeTail.x > snakeboard.width + snakeTileSize) { // outside of right wall -> come back from left wall
+            snake.comeBackAt(0, snakeboard.height - snakeTail.y - snakeTileSize)
+        }
+        if (snakeTail.y < -snakeTileSize) { // outside of top wall -> come back from bottom wall
+            snake.comeBackAt(snakeboard.width - snakeTail.x - snakeTileSize, snakeboard.height - snakeTileSize)
+        }
+        if (snakeTail.y > snakeboard.height + snakeTileSize) { // outside of bottom wall -> come back from top wall
+            snake.comeBackAt(snakeboard.width - snakeTail.x - snakeTileSize, 0)
+        }
+    }
 }
