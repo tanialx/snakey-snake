@@ -29,6 +29,8 @@ class Snake {
         this.pause = true;
         this.speed = 70;
         this.weight_increment = .5
+        this.weight_incre_acc = 0
+        this.speed_threshold = 10
     }
 
     /**
@@ -253,13 +255,13 @@ class Snake {
     grow(nColor) {
         const head = { x: this.#snake_body[0].x + this.dx * this.#step(), y: this.#snake_body[0].y + this.dy * this.#step(), color: nColor };
         this.#snake_body.unshift(head);
-        if (this.speed > 1) {
+        if (this.speed > this.speed_threshold * 2) {
             this.speed -= 1;
-        } else if (this.speed > 0.01) {
+        } else if (this.speed > this.speed_threshold) {
             this.speed -= 0.01;
         } else {
-            // Keep constant speed 0.01
-        }
+            // Keep constant speed = speed_threshold
+        }        
     }
 
     /**
@@ -310,7 +312,11 @@ class Snake {
          * 1. Assign new value for snake_tile_size
          * 2. Re-calculate snake body tiles' positions based on the new tile size
          */
-        this.snake_tile_size += this.weight_increment;
+        this.weight_incre_acc += this.weight_increment
+        if (this.weight_incre_acc >= 1) {
+            this.snake_tile_size += Math.floor(this.weight_incre_acc);
+            this.weight_incre_acc = 0
+        }
         this.#snake_body = this.#bodySizeIncrease();
         /*
          * after snake reaches a certain tile size (adult tile size), weight gain
