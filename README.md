@@ -1,5 +1,8 @@
 # snakey-snake
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg?style=flat-square)](LICENSE.md)
+![stability-wip](https://img.shields.io/badge/Stability-WIP-yellow.svg?style=flat-square)
+
 Just a snake game. Play it @ https://tanialx.github.io/snakey-snake/
 
 This project is where I play around with `<canvas>`, do various drawing, or experiment with some JavaScript or CSS behaviors. Any new implementation is created out of a whim and just for fun, so the game can sometimes become silly.
