@@ -1,10 +1,5 @@
 const snakeboard = document.getElementById("snakeboard");
-const vpRect = snakeboard.parentNode.getBoundingClientRect();
 const bgStatic = document.getElementById("bg_static");
-snakeboard.width = vpRect.width;
-snakeboard.height = vpRect.height;
-bgStatic.width = vpRect.width;
-bgStatic.height = vpRect.height;
 
 const snakeboard_ctx = snakeboard.getContext("2d");
 const bgStatic_ctx = bgStatic.getContext("2d");
@@ -29,31 +24,56 @@ const donutEatenCallback = () => snake.gainWeight()
  * we don't want our generated items to be cropped off due to canvas boundaries
  * so we leave a margin of 25 px (the max size of food declared above)
  */
-const generatedItemMargin = 25;
-const generatedItemBox = {
-    x: {
-        min: generatedItemMargin,
-        max: snakeboard.width - generatedItemMargin
-    },
-    y: {
-        min: generatedItemMargin,
-        max: snakeboard.height - generatedItemMargin
-    }
-};
+let generatedItemBox = {}
 
 document.addEventListener("keydown", keyboardControl);
+
+/**
+ * When window resize, call init() to re-calculate different dimensions and re-render
+ * objects on canvas
+ * - foods' positions are re-generated
+ * - snake's state is preserved
+ * No need to take care of snake's position because if snake is outside of canvas
+ * after window resized, it'll be automatically re-positioned by comebackIfSnakeGoOutsideCanvas() func
+ * during gameLoop run
+ */
+window.addEventListener('resize', () => init());
 
 init();
 
 /**
- * this function is called only one at first-load to set up initial contents
+ * this function is called at first-load to set up initial contents
+ * it's also called every time window size is changed (e.g, user resizes browser)
  */
 function init() {
+    sizingGameBoards()
     renderStaticBackground(bgStatic_ctx);
     // pre-generate food items
     foods.forEach(f => f.new(generatedItemBox));
     // render snake object for the first-time; it'll be updated during gameLoop
     snake.render(snakeboard_ctx);
+}
+
+/**
+ * calculate dimensions for game contents
+ */
+function sizingGameBoards() {
+    const vpRect = snakeboard.parentNode.getBoundingClientRect();
+    const generatedItemMargin = 25;
+    snakeboard.width = vpRect.width;
+    snakeboard.height = vpRect.height;
+    bgStatic.width = vpRect.width;
+    bgStatic.height = vpRect.height;
+    generatedItemBox = {
+        x: {
+            min: generatedItemMargin,
+            max: snakeboard.width - generatedItemMargin
+        },
+        y: {
+            min: generatedItemMargin,
+            max: snakeboard.height - generatedItemMargin
+        }
+    };
 }
 
 /**
