@@ -263,8 +263,7 @@ function isSnakeNeckVisible() {
 }
 
 function isSnakeTileVisible(tile) {
-    const snakeTileSize = snake.snake_tile_size
-    return tile.x > 0 && tile.x < snakeboard.width - snakeTileSize && tile.y > 0 && tile.y < snakeboard.height - snakeTileSize
+    return tile.x >= 0 && tile.x < snakeboard.width && tile.y >= 0 && tile.y < snakeboard.height
 }
 
 /**
