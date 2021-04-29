@@ -2,7 +2,7 @@ drawRoundedSquare = function (ctx, x, y, width, height, radius, fill, stroke, li
 
     //Ref https://gist.github.com/afreeland/4484489
 
-    var useStroke = typeof stroke == 'undefined' || stroke !== 0;
+    const useStroke = typeof stroke == 'undefined' || stroke !== 0;
     radius = typeof radius == 'undefined' ? 5 : radius;
 
     // Save previous context
@@ -35,10 +35,20 @@ function randomColor() {
     return "#" + Math.floor(Math.random() * 16777215).toString(16);
 }
 
+/**
+ * Generate a random integer between input MIN and MAX value
+ * @param {*} min 
+ * @param {*} max 
+ * @returns 
+ */
 function getRandomInteger(min, max) {
     return Math.floor(Math.random() * (max - min)) + min;
 }
 
+/**
+ * Generate a pastel color
+ * @returns hsl
+ */
 function randomPastelColor() {
     return "hsl(" + 360 * Math.random() + ',' +
         (25 + 70 * Math.random()) + '%,' +
