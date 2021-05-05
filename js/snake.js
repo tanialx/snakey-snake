@@ -1,14 +1,12 @@
 class Snake {
 
-    #snake_body;
-
     constructor(props) {
         this.snake_tile_size = props.initialTileSize;
         this.snake_adult_tile_size = props.adultTileSize;
         this.snake_col = '#adc2eb';
         this.dx = 1;
         this.dy = 0;
-        this.#snake_body = [
+        this.snake_body = [
             {
                 x: props.initialPosition.x,
                 y: props.initialPosition.y,
@@ -37,7 +35,7 @@ class Snake {
      * The length of each move
      * @returns snake_tile_size
      */
-    #step() {
+    step() {
         return this.snake_tile_size;
     }
 
@@ -53,8 +51,8 @@ class Snake {
      * @param {*} canvas_ctx 
      */
     render(canvas_ctx) {
-        this.#snake_body.forEach(tile => this.#renderSnakePart(tile, canvas_ctx));
-        this.#renderSnakeEyesAndTongue(canvas_ctx);
+        this.snake_body.forEach(tile => this.renderSnakePart(tile, canvas_ctx));
+        this.renderSnakeEyesAndTongue(canvas_ctx);
     }
 
     /**
@@ -62,7 +60,7 @@ class Snake {
      * @param {*} snake_part snake's tile
      * @param {*} ctx canvas context
      */
-    #renderSnakePart(snake_part, ctx) {
+    renderSnakePart(snake_part, ctx) {
         drawRoundedSquare(ctx,
             snake_part.x, snake_part.y,
             this.snake_tile_size, this.snake_tile_size,
@@ -75,8 +73,8 @@ class Snake {
      * Render snake's eyes and tongue on canvas
      * @param {*} canvas_ctx 
      */
-    #renderSnakeEyesAndTongue(canvas_ctx) {
-        const head = this.#snake_body[0];
+    renderSnakeEyesAndTongue(canvas_ctx) {
+        const head = this.snake_body[0];
         let eye_1 = {
             x: 0, y: 0
         }, eye_2 = {
@@ -157,12 +155,12 @@ class Snake {
         if (this.pause) {
             return;
         }
-        const head = { x: this.#snake_body[0].x + this.dx * this.#step(), y: this.#snake_body[0].y + this.dy * this.#step(), color: this.#snake_body[0].color };
-        for (var i = 0; i < this.#snake_body.length - 1; i++) {
-            this.#snake_body[i].color = this.#snake_body[i + 1].color;
+        const head = { x: this.snake_body[0].x + this.dx * this.step(), y: this.snake_body[0].y + this.dy * this.step(), color: this.snake_body[0].color };
+        for (var i = 0; i < this.snake_body.length - 1; i++) {
+            this.snake_body[i].color = this.snake_body[i + 1].color;
         }
-        this.#snake_body.unshift(head);
-        this.#snake_body.pop();
+        this.snake_body.unshift(head);
+        this.snake_body.pop();
     }
 
     /**
@@ -174,9 +172,9 @@ class Snake {
         head.y = y
         // Stack other body's tiles together
         // They would be resolved in subsequent moves by move() function
-        for (var i = 1; i < this.#snake_body.length - 1; i++) {
-            this.#snake_body[i].x = x - this.dx * this.#step
-            this.#snake_body[i].y = y - this.dy * this.#step
+        for (var i = 1; i < this.snake_body.length - 1; i++) {
+            this.snake_body[i].x = x - this.dx * this.step()
+            this.snake_body[i].y = y - this.dy * this.step()
         }
     }
 
@@ -185,14 +183,14 @@ class Snake {
     }
 
     turnLeft() {
-        this.#turnMult(1);
+        this.turnMult(1);
     }
 
     turnRight() {
-        this.#turnMult(-1);
+        this.turnMult(-1);
     }
 
-    #turnMult(mult) {
+    turnMult(mult) {
         if (this.isMovingRight() || this.isMovingLeft()) {
             this.dy = this.dx * mult * -1;
             this.dx = 0;
@@ -226,7 +224,7 @@ class Snake {
      * @returns the first tile in snake's body
      */
     head() {
-        return this.#snake_body[0];
+        return this.snake_body[0];
     }
 
     /**
@@ -234,7 +232,7 @@ class Snake {
      * @returns the last tile in snake's body
      */
     tail() {
-        return this.#snake_body[this.#snake_body.length - 1]
+        return this.snake_body[this.snake_body.length - 1]
     }
 
     /**
@@ -242,7 +240,7 @@ class Snake {
      * @returns the second tile in snake's body
      */
     neck() {
-        return this.#snake_body[1];
+        return this.snake_body[1];
     }
 
     /**
@@ -253,8 +251,8 @@ class Snake {
      * @todo consider handle 'grow' and 'speed change' separately
      */
     grow(nColor) {
-        const head = { x: this.#snake_body[0].x + this.dx * this.#step(), y: this.#snake_body[0].y + this.dy * this.#step(), color: nColor };
-        this.#snake_body.unshift(head);
+        const head = { x: this.snake_body[0].x + this.dx * this.step(), y: this.snake_body[0].y + this.dy * this.step(), color: nColor };
+        this.snake_body.unshift(head);
         if (this.speed > this.speed_threshold * 2) {
             this.speed -= 1;
         } else if (this.speed > this.speed_threshold) {
@@ -268,19 +266,19 @@ class Snake {
      * Re-calculate snake tiles' positions when snake gains weight
      * @returns 
      */
-    #bodySizeIncrease() {
+    bodySizeIncrease() {
         const newSnakeBody = [snake.head()];
         let current_x = snake.head().x;
         let current_y = snake.head().y;
-        for (let i = 1; i < this.#snake_body.length; i++) {
+        for (let i = 1; i < this.snake_body.length; i++) {
             const this_tile = {
-                x: this.#snake_body[i].x,
-                y: this.#snake_body[i].y,
-                col: this.#snake_body[i].color
+                x: this.snake_body[i].x,
+                y: this.snake_body[i].y,
+                col: this.snake_body[i].color
             }
             const prev_tile = {
-                x: this.#snake_body[i - 1].x,
-                y: this.#snake_body[i - 1].y
+                x: this.snake_body[i - 1].x,
+                y: this.snake_body[i - 1].y
             }
             if (this_tile.x === prev_tile.x) {
                 if (this_tile.y < prev_tile.y) {
@@ -317,7 +315,7 @@ class Snake {
             this.snake_tile_size += Math.floor(this.weight_incre_acc);
             this.weight_incre_acc = 0
         }
-        this.#snake_body = this.#bodySizeIncrease();
+        this.snake_body = this.bodySizeIncrease();
         /*
          * after snake reaches a certain tile size (adult tile size), weight gain
          * slows down significantly to prevent the snake from getting too fat
