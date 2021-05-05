@@ -48,7 +48,7 @@ init();
 function init() {
     sizingGameBoards()
     if (!snake) {
-        snake = new Snake({ initialPosition: { x: snakeboard.width / 4, y: snakeboard.height / 2 }, initialTileSize: 10, adultTileSize: 20 });
+        snake = new Snake({ initialPosition: { x: snakeboard.width / 4, y: snakeboard.height / 2 }, initialTileSize: 10 });
     }
     renderStaticBackground(bgStatic_ctx);
     // pre-generate food items
