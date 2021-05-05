@@ -4,7 +4,7 @@ const bgStatic = document.getElementById("bg_static");
 const snakeboard_ctx = snakeboard.getContext("2d");
 const bgStatic_ctx = bgStatic.getContext("2d");
 
-let snake = new Snake({ initialPosition: { x: 240, y: snakeboard.height / 2 }, initialTileSize: 10, adultTileSize: 20 });
+let snake;
 
 /*
  * pre-generate random foods ( 10 x fruits + 5 x donuts) on screen
@@ -47,6 +47,9 @@ init();
  */
 function init() {
     sizingGameBoards()
+    if (!snake) {
+        snake = new Snake({ initialPosition: { x: snakeboard.width / 4, y: snakeboard.height / 2 }, initialTileSize: 10, adultTileSize: 20 });
+    }
     renderStaticBackground(bgStatic_ctx);
     // pre-generate food items
     foods.forEach(f => f.new(generatedItemBox));
