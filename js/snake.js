@@ -54,6 +54,13 @@ class Snake {
     }
 
     /**
+     * @returns Snake body length (# of body tiles)
+     */
+    length() {
+        return this.snake_body.length
+    }
+
+    /**
      * Render snake on canvas
      * Steps:
      * 1. Render each tiles

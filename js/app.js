@@ -210,7 +210,7 @@ function keyboardControl(event) {
      * but SNAKE object only understands 'turn-left' and 'turn-right', hence the requested direction
      * needs to be translated to snake's language first
      */
-    if (isSnakeNeckVisible()) {
+    if (isSnakeHeadVisible() && isSnakeNeckVisible()) {
         /*
          * only accept snake's movement keyboard request
          * if snake's head & neck are both visible on screen
@@ -269,26 +269,90 @@ function isSnakeTileVisible(tile) {
     return tile.x >= 0 && tile.x < snakeboard.width && tile.y >= 0 && tile.y < snakeboard.height
 }
 
+function noOfSnakeTilesOffCanvasFromHead() {
+    let count = 0
+    while (count < snake.length() && !isSnakeTileVisible(snake.snake_body[count])) count++
+    return count
+}
+
+const SNAKE_OFF_CANVAS_DELAY_AFTER_FIRST_TURN = 4
+
+let snakeOffCanvasDelayAfterFirstTurnCountDown = SNAKE_OFF_CANVAS_DELAY_AFTER_FIRST_TURN;
+
 /**
  * Check if snake has gone outside of canvas and re-position the snake to come back to canvas if
- * - its head is fully gone from canvas, and
- * - its tail has just gone outside of canvas boundaries
+ * a number of snake's tiles counted from head (*OFF_THRESHOLD*) has fully gone outside canvas
+ * 
+ * Snake comes back to canvas by making a U-turn: two consecutive turns with a delay in-between
+ * (*SNAKE_OFF_CANVAS_DELAY_AFTER_FIRST_TURN*) so that snake doesn't come back at a position too close
+ * from where it starts moving outside canvas
  */
 function comebackIfSnakeGoOutsideCanvas() {
-    const snakeTileSize = snake.snake_tile_size
-    if (!isSnakeHeadVisible()) {
-        const snakeTail = snake.tail()
-        if (snakeTail.x < -snakeTileSize) { // outside of left wall -> come back from right wall
-            snake.comeBackAt(snakeboard.width - snakeTileSize, snakeboard.height - snakeTail.y - snakeTileSize)
+    const head = snake.head()
+    const OFF_THRESHOLD = snake.length() < 10 ? snake.length() / 2 : 5
+
+    if (noOfSnakeTilesOffCanvasFromHead() >= OFF_THRESHOLD) {
+
+        if (snakeOffCanvasDelayAfterFirstTurnCountDown > 0) {
+            snakeOffCanvasDelayAfterFirstTurnCountDown--
+            return
         }
-        if (snakeTail.x > snakeboard.width + snakeTileSize) { // outside of right wall -> come back from left wall
-            snake.comeBackAt(0, snakeboard.height - snakeTail.y - snakeTileSize)
+
+        const snakeTileSize = snake.snake_tile_size
+        if (head.x < -snakeTileSize) { // outside of left wall
+            if (snake.isMovingUp()) snake.turnRight()
+            if (snake.isMovingDown()) snake.turnLeft()
+            if (snake.isMovingLeft()) {
+                if (head.y <= snakeboard.height / 2) {
+                    snake.turnLeft()
+                } else {
+                    snake.turnRight()
+                }
+                snakeOffCanvasDelayAfterFirstTurnCountDown = SNAKE_OFF_CANVAS_DELAY_AFTER_FIRST_TURN
+            }
+            return
         }
-        if (snakeTail.y < -snakeTileSize) { // outside of top wall -> come back from bottom wall
-            snake.comeBackAt(snakeboard.width - snakeTail.x - snakeTileSize, snakeboard.height - snakeTileSize)
+
+        if (head.x > snakeboard.width) { // outside of right wall
+            if (snake.isMovingUp()) snake.turnLeft()
+            if (snake.isMovingDown()) snake.turnRight()
+            if (snake.isMovingRight()) {
+                if (head.y <= snakeboard.height / 2) {
+                    snake.turnRight()
+                } else {
+                    snake.turnLeft()
+                }
+                snakeOffCanvasDelayAfterFirstTurnCountDown = SNAKE_OFF_CANVAS_DELAY_AFTER_FIRST_TURN
+            }
+            return
         }
-        if (snakeTail.y > snakeboard.height + snakeTileSize) { // outside of bottom wall -> come back from top wall
-            snake.comeBackAt(snakeboard.width - snakeTail.x - snakeTileSize, 0)
+
+        if (head.y < -snakeTileSize) { // outside of top wall
+            if (snake.isMovingLeft()) snake.turnLeft()
+            if (snake.isMovingRight()) snake.turnRight()
+            if (snake.isMovingUp()) {
+                if (head.x <= snakeboard.width / 2) {
+                    snake.turnRight()
+                } else {
+                    snake.turnLeft()
+                }
+                snakeOffCanvasDelayAfterFirstTurnCountDown = SNAKE_OFF_CANVAS_DELAY_AFTER_FIRST_TURN
+            }
+            return
+        }
+
+        if (head.y > snakeboard.height) { // outside of bottom wall
+            if (snake.isMovingLeft()) snake.turnRight()
+            if (snake.isMovingRight()) snake.turnLeft()
+            if (snake.isMovingDown()) {
+                if (head.x <= snakeboard.width / 2) {
+                    snake.turnLeft()
+                } else {
+                    snake.turnRight()
+                }
+                snakeOffCanvasDelayAfterFirstTurnCountDown = SNAKE_OFF_CANVAS_DELAY_AFTER_FIRST_TURN
+            }
+            return
         }
     }
 }
