@@ -12,9 +12,12 @@ body {
     * inside of it will be relative to the parent
     */
     position: relative;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
+    margin: auto;
+    margin-top: 2vmin;
+    margin-bottom: 2vmin;
+    padding: 0;
+    width: 96vmin;
+    height: 96vmin;
 }
 
 #gameboard canvas {

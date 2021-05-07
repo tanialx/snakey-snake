@@ -2,7 +2,6 @@ class Snake {
 
     constructor(props) {
         this.snake_tile_size = props.initialTileSize;
-        this.snake_adult_tile_size = props.adultTileSize;
         this.snake_col = '#adc2eb';
         this.dx = 1;
         this.dy = 0;
@@ -26,9 +25,20 @@ class Snake {
         this.snake_tongue_color = "#c6538c";
         this.pause = true;
         this.speed = 70;
-        this.weight_increment = .5
         this.weight_incre_acc = 0
         this.speed_threshold = 10
+    }
+
+    /**
+     * Only when weight-increment variable *weight_incre_acc* reaches this threshold value,
+     * snake's weight gain is observable through its increased body tile size
+     * 
+     * The fatter the snake is, the longer it takes for the snake to gain real weight
+     * 
+     * @returns double snake's current tile size
+     */
+    weightIncrementAccumulatedTo() {
+        return this.snake_tile_size / 2
     }
 
     /**
@@ -41,6 +51,13 @@ class Snake {
 
     init() {
         this.render();
+    }
+
+    /**
+     * @returns Snake body length (# of body tiles)
+     */
+    length() {
+        return this.snake_body.length
     }
 
     /**
@@ -310,18 +327,11 @@ class Snake {
          * 1. Assign new value for snake_tile_size
          * 2. Re-calculate snake body tiles' positions based on the new tile size
          */
-        this.weight_incre_acc += this.weight_increment
-        if (this.weight_incre_acc >= 1) {
-            this.snake_tile_size += Math.floor(this.weight_incre_acc);
+        this.weight_incre_acc += 1
+        if (this.weight_incre_acc >= this.weightIncrementAccumulatedTo()) {
+            this.snake_tile_size++;
             this.weight_incre_acc = 0
-        }
-        this.snake_body = this.bodySizeIncrease();
-        /*
-         * after snake reaches a certain tile size (adult tile size), weight gain
-         * slows down significantly to prevent the snake from getting too fat
-         */
-        if (this.snake_tile_size >= this.snake_adult_tile_size) {
-            this.weight_increment = .01
+            this.snake_body = this.bodySizeIncrease();
         }
     }
 }
